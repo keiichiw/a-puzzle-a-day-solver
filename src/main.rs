@@ -125,7 +125,7 @@ fn main() -> anyhow::Result<()> {
         }
         Some(p) => {
             let x = if p <= 5 { 0 } else { 1 };
-            let y = p - x * 5;
+            let y = p - x * 6;
             Point::new(x as i32, y as i32)
         }
     };
