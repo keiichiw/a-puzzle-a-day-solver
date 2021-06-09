@@ -69,14 +69,17 @@ fn main() -> Result<()> {
     let board = Board::new_from_day_pos(month_pos, day_pos);
     let blocks = Block::get_blocks();
 
-    match solve(&board, &blocks) {
-        Ok(Solution { board, .. }) => {
-            assert!(board.first_empty_cell().is_none());
-            println!("Solution:\n{}", board);
-        }
-        Err(e) => {
-            println!("Solution not found: {}", e);
-        }
+    let sols = solve(&board, &blocks);
+    if sols.is_empty() {
+        println!("Solution not found");
+        return Ok(());
+    }
+    println!("{} solutions found.", sols.len());
+
+    for (idx, s) in sols.iter().enumerate() {
+        assert!(s.board.first_empty_cell().is_none());
+        print!("Solution {}:\n{}", idx, s.board);
+        println!("=======");
     }
 
     Ok(())

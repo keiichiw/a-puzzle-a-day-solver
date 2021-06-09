@@ -1,7 +1,5 @@
 use std::collections::BTreeSet;
 
-use anyhow::{bail, Result};
-
 use crate::block::*;
 use crate::board::*;
 use crate::point::*;
@@ -15,10 +13,16 @@ fn dfs(
     blocks: &[Block],
     available_blocks: &mut BTreeSet<usize>,
     board: &mut Board,
+    acc: &mut Vec<(Block, Point)>,
+    solutions: &mut Vec<Solution>,
     cnt: &mut u32,
-) -> Result<Vec<(Block, Point)>> {
+) {
     if available_blocks.is_empty() {
-        return Ok(vec![]);
+        solutions.push(Solution {
+            board: board.clone(),
+            _blocks: acc.clone(),
+        });
+        return;
     }
 
     *cnt += 1;
@@ -34,22 +38,18 @@ fn dfs(
             if let Err(_) = board.put_block(&p, i, &block) {
                 continue;
             }
-
-            if let Ok(mut ans) = dfs(blocks, available_blocks, board, cnt) {
-                ans.insert(0, (block, p));
-                return Ok(ans);
-            }
+            acc.push((block.clone(), p));
+            dfs(blocks, available_blocks, board, acc, solutions, cnt);
+            acc.pop();
             board
                 .remove_block(&p, &block)
                 .expect("remove block must succeed");
         }
         available_blocks.insert(i);
     }
-
-    bail!("solution not found");
 }
 
-pub fn solve(board: &Board, blocks: &[Block]) -> Result<Solution> {
+pub fn solve(board: &Board, blocks: &[Block]) -> Vec<Solution> {
     let mut candidate_ps = vec![];
     for i in 0..board.height() {
         for j in 0..board.width() {
@@ -66,12 +66,18 @@ pub fn solve(board: &Board, blocks: &[Block]) -> Result<Solution> {
     for i in 0..blocks.len() {
         available_blocks.insert(i);
     }
-    let r = dfs(blocks, &mut available_blocks, &mut mut_board, &mut cnt).map(|r| (mut_board, r));
+    let mut acc = vec![];
+    let mut solutions = vec![];
+    dfs(
+        blocks,
+        &mut available_blocks,
+        &mut mut_board,
+        &mut acc,
+        &mut solutions,
+        &mut cnt,
+    );
     println!("Count: {}", cnt);
-    r.map(|(board, blocks)| Solution {
-        board,
-        _blocks: blocks,
-    })
+    solutions
 }
 
 #[cfg(test)]
