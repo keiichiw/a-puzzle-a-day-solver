@@ -1,8 +1,8 @@
 mod block;
 mod board;
 mod point;
+mod solver;
 
-use std::collections::BTreeSet;
 use std::env;
 
 use anyhow::{bail, Context, Result};
@@ -11,85 +11,13 @@ use getopts::Options;
 use block::*;
 use board::*;
 use point::*;
+use solver::*;
 
-fn try_fill_board(board: &Board, blocks: &[Block]) -> Result<(Board, Vec<(Block, Point)>)> {
-    fn dfs(
-        blocks: &[Block],
-        available_blocks: &mut BTreeSet<usize>,
-        board: &mut Board,
-        cnt: &mut u32,
-    ) -> Result<Vec<(Block, Point)>> {
-        if available_blocks.is_empty() {
-            return Ok(vec![]);
-        }
+const MONTH_NAMES: [&str; 12] = [
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+];
 
-        *cnt += 1;
-
-        let p = board.first_empty_cell().unwrap();
-
-        let block_ids = available_blocks.clone();
-        for i in block_ids {
-            let mut block = blocks[i].clone();
-            available_blocks.remove(&i);
-            for _ in 0..4 {
-                block = block.rot();
-                if let Err(_) = board.put_block(&p, i, &block) {
-                    continue;
-                }
-
-                if let Ok(mut ans) = dfs(blocks, available_blocks, board, cnt) {
-                    ans.insert(0, (block, p));
-                    return Ok(ans);
-                }
-                board
-                    .remove_block(&p, &block)
-                    .expect("remove block must succeed");
-            }
-            available_blocks.insert(i);
-        }
-
-        bail!("solution not found");
-    }
-
-    let mut candidate_ps = vec![];
-    for i in 0..board.height() {
-        for j in 0..board.width() {
-            if board.board[i][j] == State::Empty {
-                candidate_ps.push(Point::new(i as i32, j as i32));
-            }
-        }
-    }
-
-    let mut mut_board = board.clone();
-    let mut cnt = 0;
-
-    let mut available_blocks = BTreeSet::new();
-    for i in 0..blocks.len() {
-        available_blocks.insert(i);
-    }
-    let r = dfs(blocks, &mut available_blocks, &mut mut_board, &mut cnt).map(|r| (mut_board, r));
-    println!("Count: {}", cnt);
-    r
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_fill() {
-        let board = Board::new(2, 2);
-
-        let v = vec!["#.", ".#"];
-        let b = Block::from_strs(&v).unwrap();
-        let b1 = b.rot();
-        let ans = try_fill_board(&board, &vec![b, b1]).unwrap();
-
-        assert_eq!(ans, vec![Point::new(0, 0), Point::new(1, 0)]);
-    }
-}
-
-fn main() -> anyhow::Result<()> {
+fn main() -> Result<()> {
     let args: Vec<String> = env::args().collect();
     let program = args[0].clone();
 
@@ -98,7 +26,7 @@ fn main() -> anyhow::Result<()> {
         "m",
         "month",
         "month",
-        "[Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec]",
+        &format!("[{}]", MONTH_NAMES.to_vec().join("|")),
     );
     opts.reqopt("d", "day", "day", "[1-31]");
     opts.optflag("h", "help", "print this help menu");
@@ -113,10 +41,6 @@ fn main() -> anyhow::Result<()> {
         println!("{}", opts.short_usage(&program));
         return Ok(());
     }
-
-    const MONTH_NAMES: [&str; 12] = [
-        "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
-    ];
 
     let month_str: String = matches.opt_get("month").unwrap().unwrap();
     let month_pos = match MONTH_NAMES.iter().position(|m| *m == month_str) {
@@ -142,68 +66,11 @@ fn main() -> anyhow::Result<()> {
         Point::new(x as i32, y as i32)
     };
 
-    #[rustfmt::skip]
-    let blocks = [
-        vec![
-            "###",
-            "#..",
-            "#..",
-        ],
-        vec![
-            "#.#",
-            "###",
-        ],
-        vec![
-            "##.",
-            ".#.",
-            ".##",
-        ],
-        vec![
-            "#.",
-            "##",
-            "#.",
-            "#.",
-        ],
-        vec![
-            "#.",
-            "##",
-            ".#",
-            ".#",
-        ],
-        vec![
-            "##",
-            ".#",
-            ".#",
-            ".#",
-        ],
-        vec![
-            "##.",
-            "###",
-        ],
-        vec![
-            "###",
-            "###",
-        ],
-    ].iter().map(|b| Block::from_strs(&b)).collect::<Result<Vec<_>>>()?;
+    let board = Board::new_from_day_pos(month_pos, day_pos);
+    let blocks = Block::get_blocks();
 
-    let mut walls = [
-        Point::new(0, 6),
-        Point::new(1, 6),
-        Point::new(6, 3),
-        Point::new(6, 4),
-        Point::new(6, 5),
-        Point::new(6, 6),
-    ]
-    .iter()
-    .map(|p| ('#', *p))
-    .collect::<Vec<_>>();
-
-    walls.append(&mut vec![('M', month_pos), ('D', day_pos)]);
-
-    let board = Board::new_with_walls(7, 7, &walls);
-
-    match try_fill_board(&board, &blocks) {
-        Ok((board, _)) => {
+    match solve(&board, &blocks) {
+        Ok(Solution { board, .. }) => {
             assert!(board.first_empty_cell().is_none());
             println!("Solution:\n{}", board);
         }

@@ -49,12 +49,30 @@ impl fmt::Display for Board {
 }
 
 impl Board {
-    pub fn new_with_walls(height: usize, width: usize, walls: &[(char, Point)]) -> Self {
+    fn new_with_walls(height: usize, width: usize, walls: &[(char, Point)]) -> Self {
         let mut board = vec![vec![State::Empty; width]; height];
         for (c, p) in walls {
             board[p.x as usize][p.y as usize] = State::Wall(*c);
         }
         Self { board }
+    }
+
+    pub fn new_from_day_pos(month_pos: Point, day_pos: Point) -> Self {
+        let mut walls = [
+            Point::new(0, 6),
+            Point::new(1, 6),
+            Point::new(6, 3),
+            Point::new(6, 4),
+            Point::new(6, 5),
+            Point::new(6, 6),
+        ]
+        .iter()
+        .map(|p| ('#', *p))
+        .collect::<Vec<_>>();
+
+        walls.append(&mut vec![('M', month_pos), ('D', day_pos)]);
+
+        Board::new_with_walls(7, 7, &walls)
     }
 
     pub fn height(&self) -> usize {
@@ -126,7 +144,7 @@ mod tests {
 
     #[test]
     fn test_fill() {
-        let mut board = Board::new(2, 2);
+        let mut board = Board::new_with_walls(2, 2, &vec![]);
 
         #[rustfmt::skip]
         let v = vec![
@@ -137,19 +155,19 @@ mod tests {
         let b = Block::from_strs(&v).unwrap();
         let b1 = b.rot();
 
-        board.put_block(&Point::new(0, 0), &b).unwrap();
-        board.put_block(&Point::new(1, 0), &b1).unwrap();
+        board.put_block(&Point::new(0, 0), 0, &b).unwrap();
+        board.put_block(&Point::new(0, 1), 1, &b1).unwrap();
 
         for l in board.board {
             for s in l {
-                assert_eq!(s, State::Fill);
+                assert!(s.is_fill());
             }
         }
     }
 
     #[test]
     fn test_overlap() {
-        let mut board = Board::new(2, 2);
+        let mut board = Board::new_with_walls(2, 2, &vec![]);
 
         #[rustfmt::skip]
         let v = vec![
@@ -159,7 +177,7 @@ mod tests {
 
         let b = Block::from_strs(&v).unwrap();
 
-        board.put_block(&Point::new(0, 0), &b).unwrap();
-        assert!(board.put_block(&Point::new(0, 0), &b).is_err());
+        board.put_block(&Point::new(0, 0), 0, &b).unwrap();
+        assert!(board.put_block(&Point::new(0, 0), 1, &b).is_err());
     }
 }

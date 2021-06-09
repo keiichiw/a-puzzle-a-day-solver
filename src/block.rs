@@ -55,6 +55,23 @@ impl Block {
         Self { ps }
     }
 
+    pub fn get_blocks() -> Vec<Self> {
+        [
+            vec!["###", "#..", "#.."],
+            vec!["#.#", "###"],
+            vec!["##.", ".#.", ".##"],
+            vec!["#.", "##", "#.", "#."],
+            vec!["#.", "##", ".#", ".#"],
+            vec!["##", ".#", ".#", ".#"],
+            vec!["##.", "###"],
+            vec!["###", "###"],
+        ]
+        .iter()
+        .map(|b| Block::from_strs(&b))
+        .collect::<Result<Vec<_>>>()
+        .unwrap()
+    }
+
     fn sort_ps(ps: &mut [Point]) {
         ps.sort();
         let min_x = ps.iter().map(|p| p.x).min().unwrap();
