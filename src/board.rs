@@ -66,7 +66,8 @@ impl Board {
     }
 
     pub fn put_block(&mut self, pos: &Point, block_id: usize, block: &Block) -> Result<()> {
-        let ps: Vec<Point> = block.ps.iter().map(|p| *pos + *p).collect();
+        let hd = block.ps[0];
+        let ps: Vec<Point> = block.ps.iter().map(|p| *pos + *p - hd).collect();
         if !ps
             .iter()
             .all(|p| self.get_cell(p).map(|s| s == State::Empty).unwrap_or(false))
@@ -81,7 +82,8 @@ impl Board {
     }
 
     pub fn remove_block(&mut self, pos: &Point, block: &Block) -> Result<()> {
-        let ps: Vec<Point> = block.ps.iter().map(|p| *pos + *p).collect();
+        let hd = block.ps[0];
+        let ps: Vec<Point> = block.ps.iter().map(|p| *pos + *p - hd).collect();
         if !ps
             .iter()
             .all(|p| self.get_cell(p).map(|s| s.is_fill()).unwrap_or(false))
@@ -104,6 +106,17 @@ impl Board {
             bail!("invalid cell: {}", p);
         }
         Ok(self.board[p.x as usize][p.y as usize])
+    }
+
+    pub fn first_empty_cell(&self) -> Option<Point> {
+        for i in 0..self.board.len() {
+            for j in 0..self.board[i].len() {
+                if self.board[i][j] == State::Empty {
+                    return Some(Point::new(i as i32, j as i32));
+                }
+            }
+        }
+        None
     }
 }
 

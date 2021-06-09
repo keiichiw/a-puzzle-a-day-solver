@@ -2,6 +2,7 @@ mod block;
 mod board;
 mod point;
 
+use std::collections::BTreeSet;
 use std::env;
 
 use anyhow::{bail, Context, Result};
@@ -13,42 +14,38 @@ use point::*;
 
 fn try_fill_board(board: &Board, blocks: &[Block]) -> Result<(Board, Vec<(Block, Point)>)> {
     fn dfs(
-        candidate_ps: &[Point],
         blocks: &[Block],
-        n: usize,
+        available_blocks: &mut BTreeSet<usize>,
         board: &mut Board,
-        cnt: &mut u64,
+        cnt: &mut u32,
     ) -> Result<Vec<(Block, Point)>> {
-        if n >= blocks.len() {
+        if available_blocks.is_empty() {
             return Ok(vec![]);
         }
 
         *cnt += 1;
-        if *cnt % 10000 == 0 {
-            print!("\x1B[2J\x1B[1;1H");
-            println!("Count: {}", cnt);
-            println!("Board:");
-            println!("{}", board);
-        }
 
-        let mut block = blocks[n].clone();
-        for _ in 0..4 {
-            for p in candidate_ps {
-                if let Err(_) = board.put_block(p, n, &block) {
+        let p = board.first_empty_cell().unwrap();
+
+        let block_ids = available_blocks.clone();
+        for i in block_ids {
+            let mut block = blocks[i].clone();
+            available_blocks.remove(&i);
+            for _ in 0..4 {
+                block = block.rot();
+                if let Err(_) = board.put_block(&p, i, &block) {
                     continue;
                 }
 
-                if let Ok(mut ans) = dfs(candidate_ps, blocks, n + 1, board, cnt) {
-                    ans.insert(0, (block, *p));
+                if let Ok(mut ans) = dfs(blocks, available_blocks, board, cnt) {
+                    ans.insert(0, (block, p));
                     return Ok(ans);
                 }
-
                 board
-                    .remove_block(p, &block)
+                    .remove_block(&p, &block)
                     .expect("remove block must succeed");
             }
-
-            block = block.rot();
+            available_blocks.insert(i);
         }
 
         bail!("solution not found");
@@ -65,8 +62,12 @@ fn try_fill_board(board: &Board, blocks: &[Block]) -> Result<(Board, Vec<(Block,
 
     let mut mut_board = board.clone();
     let mut cnt = 0;
-    let r = dfs(&candidate_ps, blocks, 0, &mut mut_board, &mut cnt).map(|r| (mut_board, r));
-    print!("\x1B[2J\x1B[1;1H");
+
+    let mut available_blocks = BTreeSet::new();
+    for i in 0..blocks.len() {
+        available_blocks.insert(i);
+    }
+    let r = dfs(blocks, &mut available_blocks, &mut mut_board, &mut cnt).map(|r| (mut_board, r));
     println!("Count: {}", cnt);
     r
 }
@@ -203,6 +204,7 @@ fn main() -> anyhow::Result<()> {
 
     match try_fill_board(&board, &blocks) {
         Ok((board, _)) => {
+            assert!(board.first_empty_cell().is_none());
             println!("Solution:\n{}", board);
         }
         Err(e) => {

@@ -44,13 +44,25 @@ impl Block {
             }
         }
 
+        Self::sort_ps(&mut ps);
         Ok(Self { ps })
     }
 
     // Rotate 90 degrees.
     pub fn rot(&self) -> Self {
-        let ps = self.ps.iter().map(|p| p.rot()).collect();
+        let mut ps = self.ps.iter().map(|p| p.rot()).collect::<Vec<_>>();
+        Self::sort_ps(&mut ps);
         Self { ps }
+    }
+
+    fn sort_ps(ps: &mut [Point]) {
+        ps.sort();
+        let min_x = ps.iter().map(|p| p.x).min().unwrap();
+        let min_y = ps.iter().map(|p| p.y).min().unwrap();
+        for p in ps.iter_mut() {
+            p.x -= min_x;
+            p.y -= min_y;
+        }
     }
 }
 
