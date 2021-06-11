@@ -1,10 +1,11 @@
+use std::cmp::{Eq, Ord, PartialEq, PartialOrd};
 use std::fmt;
 
 use anyhow::Result;
 
 use crate::point::Point;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Block {
     pub ps: Vec<Point>,
 }
@@ -88,15 +89,68 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_rot() {
+    fn test_rot_z() {
         #[rustfmt::skip]
-        let v = vec![
-            "##..",
-            ".###",
+        let z = vec![
+            "###",
+            ".#.",
+            "###",
+        ];
+        let b = Block::from_strs(&z).unwrap();
+        assert_ne!(b, b.rot());
+        assert_eq!(b, b.rot().rot());
+    }
+
+    #[test]
+    fn test_rot_plus() {
+        #[rustfmt::skip]
+        let plus = vec![
+            ".#.",
+            "###",
+            ".#.",
         ];
 
-        let b = Block::from_strs(&v).unwrap();
-        let b2 = b.rot().rot().rot().rot();
-        assert_eq!(b, b2);
+        let mut cur = Block::from_strs(&plus).unwrap();
+        for _ in 0..4 {
+            let next = cur.rot();
+            assert_eq!(cur, next);
+            cur = next;
+        }
+    }
+
+    #[test]
+    fn test_rot_bar() {
+        #[rustfmt::skip]
+        let bar = Block::from_strs(&vec![
+            "#",
+            "#",
+            "#"
+        ]).unwrap();
+        #[rustfmt::skip]
+        let minus = Block::from_strs(&vec![
+            "###",
+        ]).unwrap();
+
+        assert_ne!(bar, minus);
+        assert_eq!(bar.rot(), minus);
+        assert_eq!(bar.rot().rot(), bar);
+    }
+
+    #[test]
+    fn test_bar_padding() {
+        #[rustfmt::skip]
+        let bar1 = Block::from_strs(&vec![
+            "#",
+            "#",
+            "#"
+        ]).unwrap();
+        #[rustfmt::skip]
+        let bar2 = Block::from_strs(&vec![
+            "...#...",
+            "...#",
+            "...#..."
+        ]).unwrap();
+
+        assert_eq!(bar1, bar2);
     }
 }

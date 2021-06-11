@@ -1,27 +1,53 @@
+use std::cmp::{Eq, Ord, Ordering, PartialEq, PartialOrd};
 use std::collections::BTreeSet;
 
 use crate::block::*;
 use crate::board::*;
 use crate::point::*;
 
+//#[derive(PartialEq, Eq, PartialOrd, Ord)]
 pub struct Solution {
     pub board: Board,
-    _blocks: Vec<(Block, Point)>,
+    moves: Vec<(Block, Point)>,
+}
+
+impl Solution {
+    fn new(board: Board, mut moves: Vec<(Block, Point)>) -> Self {
+        moves.sort(); // guarantee that `moves` is sorted`
+        Self { board, moves }
+    }
+}
+
+impl PartialEq for Solution {
+    fn eq(&self, other: &Self) -> bool {
+        self.moves == other.moves
+    }
+}
+
+impl Eq for Solution {}
+
+impl Ord for Solution {
+    fn cmp(&self, other: &Self) -> Ordering {
+        self.moves.cmp(&other.moves)
+    }
+}
+
+impl PartialOrd for Solution {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
 }
 
 fn dfs(
     blocks: &[Block],
     available_blocks: &mut BTreeSet<usize>,
     board: &mut Board,
-    acc: &mut Vec<(Block, Point)>,
-    solutions: &mut Vec<Solution>,
+    moves: &mut Vec<(Block, Point)>,
+    solutions: &mut BTreeSet<Solution>,
     cnt: &mut u32,
 ) {
     if available_blocks.is_empty() {
-        solutions.push(Solution {
-            board: board.clone(),
-            _blocks: acc.clone(),
-        });
+        solutions.insert(Solution::new(board.clone(), moves.clone()));
         return;
     }
 
@@ -38,9 +64,9 @@ fn dfs(
             if let Err(_) = board.put_block(&p, i, &block) {
                 continue;
             }
-            acc.push((block.clone(), p));
-            dfs(blocks, available_blocks, board, acc, solutions, cnt);
-            acc.pop();
+            moves.push((block.clone(), p));
+            dfs(blocks, available_blocks, board, moves, solutions, cnt);
+            moves.pop();
             board
                 .remove_block(&p, &block)
                 .expect("remove block must succeed");
@@ -49,7 +75,7 @@ fn dfs(
     }
 }
 
-pub fn solve(board: &Board, blocks: &[Block]) -> Vec<Solution> {
+pub fn solve(board: &Board, blocks: &[Block]) -> BTreeSet<Solution> {
     let mut candidate_ps = vec![];
     for i in 0..board.height() {
         for j in 0..board.width() {
@@ -66,13 +92,13 @@ pub fn solve(board: &Board, blocks: &[Block]) -> Vec<Solution> {
     for i in 0..blocks.len() {
         available_blocks.insert(i);
     }
-    let mut acc = vec![];
-    let mut solutions = vec![];
+    let mut moves = vec![];
+    let mut solutions = BTreeSet::new();
     dfs(
         blocks,
         &mut available_blocks,
         &mut mut_board,
-        &mut acc,
+        &mut moves,
         &mut solutions,
         &mut cnt,
     );
@@ -90,6 +116,6 @@ mod tests {
         let board = Board::new_from_day_pos(Point::new(0, 0), Point::new(2, 0));
         let blocks = Block::get_blocks();
 
-        assert!(solve(&board, &blocks).is_ok());
+        assert!(!solve(&board, &blocks).is_empty());
     }
 }
