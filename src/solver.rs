@@ -40,6 +40,7 @@ impl PartialOrd for Solution {
 
 fn dfs(
     blocks: &[Block],
+    allow_flip: bool,
     available_blocks: &mut BTreeSet<usize>,
     board: &mut Board,
     moves: &mut Vec<(Block, Point)>,
@@ -57,15 +58,22 @@ fn dfs(
 
     let block_ids = available_blocks.clone();
     for i in block_ids {
-        let mut block = blocks[i].clone();
+        let blk = blocks[i].clone();
         available_blocks.remove(&i);
-        for _ in 0..4 {
-            block = block.rot();
+        for block in blk.possible_dirs(allow_flip) {
             if let Err(_) = board.put_block(&p, i, &block) {
                 continue;
             }
             moves.push((block.clone(), p));
-            dfs(blocks, available_blocks, board, moves, solutions, cnt);
+            dfs(
+                blocks,
+                allow_flip,
+                available_blocks,
+                board,
+                moves,
+                solutions,
+                cnt,
+            );
             moves.pop();
             board
                 .remove_block(&p, &block)
@@ -75,7 +83,7 @@ fn dfs(
     }
 }
 
-pub fn solve(board: &Board, blocks: &[Block]) -> BTreeSet<Solution> {
+pub fn solve(board: &Board, blocks: &[Block], allow_flip: bool) -> BTreeSet<Solution> {
     let mut candidate_ps = vec![];
     for i in 0..board.height() {
         for j in 0..board.width() {
@@ -96,6 +104,7 @@ pub fn solve(board: &Board, blocks: &[Block]) -> BTreeSet<Solution> {
     let mut solutions = BTreeSet::new();
     dfs(
         blocks,
+        allow_flip,
         &mut available_blocks,
         &mut mut_board,
         &mut moves,
@@ -116,6 +125,16 @@ mod tests {
         let board = Board::new_from_day_pos(Point::new(0, 0), Point::new(2, 0));
         let blocks = Block::get_blocks();
 
-        assert!(!solve(&board, &blocks).is_empty());
+        assert_eq!(solve(&board, &blocks, false /* allow_flip */).len(), 2);
+    }
+
+    #[test]
+    fn test_solve_dec29() {
+        // January 1st
+        let board = Board::new_from_day_pos(Point::new(1, 5), Point::new(6, 0));
+        let blocks = Block::get_blocks();
+
+        assert_eq!(solve(&board, &blocks, false /* allow_flip */).len(), 0);
+        assert_eq!(solve(&board, &blocks, true /* allow_flip */).len(), 54);
     }
 }

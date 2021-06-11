@@ -29,6 +29,7 @@ fn main() -> Result<()> {
         &format!("[{}]", MONTH_NAMES.to_vec().join("|")),
     );
     opts.reqopt("d", "day", "day", "[1-31]");
+    opts.optflag("f", "allow-flip", "allow flipping pieces");
     opts.optflag("h", "help", "print this help menu");
     let matches = match opts.parse(&args[1..]) {
         Ok(m) => m,
@@ -41,6 +42,8 @@ fn main() -> Result<()> {
         println!("{}", opts.short_usage(&program));
         return Ok(());
     }
+
+    let allow_flip = matches.opt_present("f");
 
     let month_str: String = matches.opt_get("month").unwrap().unwrap();
     let month_pos = match MONTH_NAMES.iter().position(|m| *m == month_str) {
@@ -69,7 +72,7 @@ fn main() -> Result<()> {
     let board = Board::new_from_day_pos(month_pos, day_pos);
     let blocks = Block::get_blocks();
 
-    let sols = solve(&board, &blocks);
+    let sols = solve(&board, &blocks, allow_flip);
     if sols.is_empty() {
         println!("Solution not found");
         return Ok(());

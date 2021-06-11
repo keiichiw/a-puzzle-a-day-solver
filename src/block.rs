@@ -1,4 +1,5 @@
 use std::cmp::{Eq, Ord, PartialEq, PartialOrd};
+use std::collections::BTreeSet;
 use std::fmt;
 
 use anyhow::Result;
@@ -45,15 +46,38 @@ impl Block {
             }
         }
 
-        Self::sort_ps(&mut ps);
+        Self::normalize(&mut ps);
         Ok(Self { ps })
     }
 
     // Rotate 90 degrees.
     pub fn rot(&self) -> Self {
         let mut ps = self.ps.iter().map(|p| p.rot()).collect::<Vec<_>>();
-        Self::sort_ps(&mut ps);
+        Self::normalize(&mut ps);
         Self { ps }
+    }
+
+    fn flip(&self) -> Self {
+        let mut ps = self.ps.iter().map(|p| p.flip()).collect::<Vec<_>>();
+        Self::normalize(&mut ps);
+        Self { ps }
+    }
+
+    pub fn possible_dirs(&self, allow_flip: bool) -> BTreeSet<Self> {
+        let mut s = BTreeSet::new();
+        let mut b = self.clone();
+        for _ in 0..4 {
+            s.insert(b.clone());
+            b = b.rot();
+        }
+        if allow_flip {
+            b = b.flip();
+            for _ in 0..4 {
+                s.insert(b.clone());
+                b = b.rot();
+            }
+        }
+        s
     }
 
     pub fn get_blocks() -> Vec<Self> {
@@ -73,7 +97,7 @@ impl Block {
         .unwrap()
     }
 
-    fn sort_ps(ps: &mut [Point]) {
+    fn normalize(ps: &mut [Point]) {
         ps.sort();
         let min_x = ps.iter().map(|p| p.x).min().unwrap();
         let min_y = ps.iter().map(|p| p.y).min().unwrap();

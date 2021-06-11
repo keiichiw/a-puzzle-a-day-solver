@@ -47,4 +47,11 @@ impl Point {
             y: self.x,
         }
     }
+
+    pub fn flip(&self) -> Self {
+        Self {
+            x: self.x,
+            y: -self.y,
+        }
+    }
 }
