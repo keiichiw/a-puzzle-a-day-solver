@@ -1,17 +1,8 @@
-mod block;
-mod board;
-mod point;
-mod solver;
-
 use std::env;
 
+use a_puzzle_a_day_lib::*;
 use anyhow::{bail, Context, Result};
 use getopts::Options;
-
-use block::*;
-use board::*;
-use point::*;
-use solver::*;
 
 const MONTH_NAMES: [&str; 12] = [
     "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",

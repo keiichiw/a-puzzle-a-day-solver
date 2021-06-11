@@ -1,0 +1,10 @@
+[package]
+name = "a-puzzle-a-day-cli"
+version = "0.1.0"
+authors = ["Keiichi Watanabe <udon.watanabe@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+a-puzzle-a-day-lib = { path = "../solver" }
+anyhow = "1.0"
+getopts = "0.2"
