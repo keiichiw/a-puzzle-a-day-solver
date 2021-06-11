@@ -30,6 +30,11 @@ fn main() -> Result<()> {
     );
     opts.reqopt("d", "day", "day", "[1-31]");
     opts.optflag("f", "allow-flip", "allow flipping pieces");
+    opts.optflag(
+        "o",
+        "one-solution",
+        "stop searching once one solution is found",
+    );
     opts.optflag("h", "help", "print this help menu");
     let matches = match opts.parse(&args[1..]) {
         Ok(m) => m,
@@ -44,6 +49,11 @@ fn main() -> Result<()> {
     }
 
     let allow_flip = matches.opt_present("f");
+    let one_solution = matches.opt_present("o");
+    let opts = SolverOptions {
+        allow_flip,
+        one_solution,
+    };
 
     let month_str: String = matches.opt_get("month").unwrap().unwrap();
     let month_pos = match MONTH_NAMES.iter().position(|m| *m == month_str) {
@@ -72,7 +82,7 @@ fn main() -> Result<()> {
     let board = Board::new_from_day_pos(month_pos, day_pos);
     let blocks = Block::get_blocks();
 
-    let sols = solve(&board, &blocks, allow_flip);
+    let sols = solve(&board, &blocks, &opts);
     if sols.is_empty() {
         println!("Solution not found");
         return Ok(());

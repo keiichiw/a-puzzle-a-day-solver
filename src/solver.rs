@@ -38,15 +38,24 @@ impl PartialOrd for Solution {
     }
 }
 
+pub struct SolverOptions {
+    pub allow_flip: bool,
+    pub one_solution: bool,
+}
+
 fn dfs(
+    opts: &SolverOptions,
     blocks: &[Block],
-    allow_flip: bool,
     available_blocks: &mut BTreeSet<usize>,
     board: &mut Board,
     moves: &mut Vec<(Block, Point)>,
     solutions: &mut BTreeSet<Solution>,
     cnt: &mut u32,
 ) {
+    if opts.one_solution && !solutions.is_empty() {
+        return;
+    }
+
     if available_blocks.is_empty() {
         solutions.insert(Solution::new(board.clone(), moves.clone()));
         return;
@@ -60,20 +69,12 @@ fn dfs(
     for i in block_ids {
         let blk = blocks[i].clone();
         available_blocks.remove(&i);
-        for block in blk.possible_dirs(allow_flip) {
+        for block in blk.possible_dirs(opts.allow_flip) {
             if let Err(_) = board.put_block(&p, i, &block) {
                 continue;
             }
             moves.push((block.clone(), p));
-            dfs(
-                blocks,
-                allow_flip,
-                available_blocks,
-                board,
-                moves,
-                solutions,
-                cnt,
-            );
+            dfs(opts, blocks, available_blocks, board, moves, solutions, cnt);
             moves.pop();
             board
                 .remove_block(&p, &block)
@@ -83,7 +84,7 @@ fn dfs(
     }
 }
 
-pub fn solve(board: &Board, blocks: &[Block], allow_flip: bool) -> BTreeSet<Solution> {
+pub fn solve(board: &Board, blocks: &[Block], opts: &SolverOptions) -> BTreeSet<Solution> {
     let mut candidate_ps = vec![];
     for i in 0..board.height() {
         for j in 0..board.width() {
@@ -103,8 +104,8 @@ pub fn solve(board: &Board, blocks: &[Block], allow_flip: bool) -> BTreeSet<Solu
     let mut moves = vec![];
     let mut solutions = BTreeSet::new();
     dfs(
+        opts,
         blocks,
-        allow_flip,
         &mut available_blocks,
         &mut mut_board,
         &mut moves,
@@ -121,20 +122,27 @@ mod tests {
 
     #[test]
     fn test_solve_jan1() {
-        // January 1st
+        // January 1
         let board = Board::new_from_day_pos(Point::new(0, 0), Point::new(2, 0));
         let blocks = Block::get_blocks();
-
-        assert_eq!(solve(&board, &blocks, false /* allow_flip */).len(), 2);
+        let opts = SolverOptions {
+            allow_flip: false,
+            one_solution: false,
+        };
+        assert_eq!(solve(&board, &blocks, &opts).len(), 2);
     }
 
     #[test]
     fn test_solve_dec29() {
-        // January 1st
+        // December 29
         let board = Board::new_from_day_pos(Point::new(1, 5), Point::new(6, 0));
         let blocks = Block::get_blocks();
-
-        assert_eq!(solve(&board, &blocks, false /* allow_flip */).len(), 0);
-        assert_eq!(solve(&board, &blocks, true /* allow_flip */).len(), 54);
+        let mut opts = SolverOptions {
+            allow_flip: false,
+            one_solution: true,
+        };
+        assert_eq!(solve(&board, &blocks, &opts).len(), 0);
+        opts.allow_flip = true;
+        assert_eq!(solve(&board, &blocks, &opts).len(), 1);
     }
 }
