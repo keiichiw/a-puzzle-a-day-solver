@@ -23,7 +23,7 @@ module.exports = {
     },
     output: {
         path: path.resolve(__dirname, 'public/dist/'),
-        publicPath: "./public/dist/",
+        publicPath: "./dist/",
         filename: 'main.js',
     },
     plugins: [
@@ -31,7 +31,8 @@ module.exports = {
             template: './public/index.html'
         }),
         new WasmPackPlugin({
-            crateDirectory: path.resolve(__dirname, ".")
+            crateDirectory: path.resolve(__dirname, "."),
+            outDir: "public/pkg",
         }),
         // Have this example work in Edge which doesn't ship `TextEncoder` or
         // `TextDecoder` at this time.
@@ -51,7 +52,7 @@ module.exports = {
     },
     devServer: {
         compress: true,
-        publicPath: "/public/dist/",
+        publicPath: "/dist/",
         contentBase: path.join(__dirname, 'public'),
     },
 };
