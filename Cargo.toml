@@ -11,4 +11,5 @@ members = [ "cli", "solver" ]
 crate-type = ["cdylib"]
 
 [dependencies]
+a-puzzle-a-day-lib = { path = "solver" }
 wasm-bindgen = "0.2.74"

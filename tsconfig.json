@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "sourceMap": false,
+        "target": "es5",
+        "lib": ["dom","es6","es2015.core"],
+        "outDir": "dist",
+        "module": "esNext",
+        "moduleResolution": "node",
+    },
+    "include": [
+        "app/**.ts",
+    ],
+    "exclude": [
+        "node_modules",
+    ]
+}

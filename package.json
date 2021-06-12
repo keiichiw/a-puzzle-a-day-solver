@@ -1,14 +1,17 @@
 {
-  "scripts": {
-    "build": "webpack",
-    "serve": "webpack-dev-server"
-  },
-  "devDependencies": {
-    "@wasm-tool/wasm-pack-plugin": "1.0.1",
-    "text-encoding": "^0.7.0",
-    "html-webpack-plugin": "^3.2.0",
-    "webpack": "^4.29.4",
-    "webpack-cli": "^3.1.1",
-    "webpack-dev-server": "^3.1.0"
-  }
+    "scripts": {
+        "build": "webpack",
+        "serve": "webpack serve"
+    },
+    "devDependencies": {
+        "@wasm-tool/wasm-pack-plugin": "github:wasm-tool/wasm-pack-plugin",
+        "html-webpack-plugin": "^5.3.1",
+        "path": "^0.12.7",
+        "text-encoding": "^0.7.0",
+        "ts-loader": "^9.2.3",
+        "typescript": "^4.3.2",
+        "webpack": "^5.38.1",
+        "webpack-cli": "^4.7.2",
+        "webpack-dev-server": "^3.11.2"
+    }
 }

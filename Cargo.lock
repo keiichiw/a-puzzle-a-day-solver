@@ -21,6 +21,7 @@ dependencies = [
 name = "a-puzzle-a-day-solver"
 version = "0.1.0"
 dependencies = [
+ "a-puzzle-a-day-lib",
  "wasm-bindgen",
 ]
 
