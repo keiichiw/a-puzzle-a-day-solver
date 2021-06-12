@@ -22,13 +22,13 @@ module.exports = {
         extensions: ['.ts', '.tsx', '.js','.wasm']
     },
     output: {
-        path: path.resolve(__dirname, 'dist/'),
-        publicPath: "./dist/",
+        path: path.resolve(__dirname, 'public/dist/'),
+        publicPath: "./public/dist/",
         filename: 'main.js',
     },
     plugins: [
         new HtmlWebpackPlugin({
-            template: 'index.html'
+            template: './public/index.html'
         }),
         new WasmPackPlugin({
             crateDirectory: path.resolve(__dirname, ".")
@@ -51,6 +51,7 @@ module.exports = {
     },
     devServer: {
         compress: true,
-        publicPath: "/dist/",
+        publicPath: "/public/dist/",
+        contentBase: path.join(__dirname, 'public'),
     },
 };
