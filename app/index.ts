@@ -4,28 +4,30 @@
 const rust = import('../public/pkg/index');
 
 const BOARD_ID: string = "board";
+const HINT_ID: string = "hint";
 const MONTH_FORM_ID: string = "month-form";
 const DAY_FORM_ID: string = "day-form";
-const FLIP_CHECK_ID: string = "allow-flip-check";
 
-function findSolution() {
+function buttonOnClick() {
     const m_form =<HTMLSelectElement>document.getElementById(MONTH_FORM_ID);
     const month = m_form.selectedIndex + 1;
     const d_form =<HTMLSelectElement>document.getElementById(DAY_FORM_ID);
     const day = d_form.selectedIndex + 1;
-    const flip_form =<HTMLInputElement>document.getElementById(FLIP_CHECK_ID);
-    const allow_flip = flip_form.checked;
 
     resetBoard();
 
-    callSolver(month, day, allow_flip).then(board => {
-        renderBoard(board);
-    }).catch(console.error);
+    callSolver(month, day).then(result => {
+        console.log(result);
+        renderBoard(result);
+    })
 }
 
 function resetBoard() {
     let board = document.getElementById(BOARD_ID);
     board.innerText = "Searching...";
+
+    let hint = document.getElementById(HINT_ID);
+    hint.innerText = "";
 }
 
 function renderBoard(s: string) {
@@ -33,20 +35,31 @@ function renderBoard(s: string) {
     board.innerText = s;
 }
 
-async function callSolver(month: number, day: number, allow_flip: boolean): Promise<string> {
+async function callSolver(month: number, day: number): Promise<string> {
     if (!(1 <= month && month <= 12 && 1 <= day && day <= 31)) {
-        console.error("Error: invalid date", month, day);
-        return Promise.reject();
+
+        throw new Error("Error: invalid date: " + month + ", " + day);
     }
 
-    return rust.then(m => {
-        const s: string = m.find_solution(month, day, allow_flip);
-        return s;
+    // If there is a solution without flipping, return it.
+    let r = await rust.then(m => {
+        return m.find_solution(month, day, false /* allow_flip */);
+    });
+    if (r != "") {
+        return r;
+    }
+
+    let hint = document.getElementById(HINT_ID);
+    hint.innerText = "(No solution without flipping pieces.)";
+
+    return await rust.then(m => {
+        return m.find_solution(month, day, true);
     });
 }
 
 function addOptions() {
     const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    const today = new Date();
 
     const m_form =<HTMLSelectElement>document.getElementById(MONTH_FORM_ID);
     months.forEach(m => {
@@ -54,6 +67,7 @@ function addOptions() {
         opt.text = m;
         m_form.add(opt);
     });
+    m_form.selectedIndex = today.getMonth();
 
     const d_form =<HTMLSelectElement>document.getElementById(DAY_FORM_ID);
     for (let i = 1; i <= 31; i++) {
@@ -61,12 +75,13 @@ function addOptions() {
         opt.text = i.toString();
         d_form.add(opt);
     }
+    d_form.selectedIndex = today.getDate() - 1;
 }
 
 
 
 function initialize() {
-    document.getElementById("find-button").onclick=findSolution;
+    document.getElementById("find-button").onclick=buttonOnClick;
 
     addOptions();
 }

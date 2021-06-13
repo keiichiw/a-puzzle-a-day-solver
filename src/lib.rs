@@ -40,7 +40,7 @@ pub fn find_solution(month: i32, day: i32, allow_flip: bool) -> String {
         .collect::<Vec<_>>();
 
     if sols.is_empty() {
-        "Not found".to_string()
+        "".to_string()
     } else {
         sols[0].to_string()
     }
