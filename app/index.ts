@@ -3,10 +3,11 @@
 // will work here one day as well!
 const rust = import('../public/pkg/index');
 
-const BOARD_ID: string = "board";
 const HINT_ID: string = "hint";
+const BOARD_TABLE_ID: string = "board-table";
 const MONTH_FORM_ID: string = "month-form";
 const DAY_FORM_ID: string = "day-form";
+const SOLVE_BUTTON_ID: string = "solve-button";
 
 function buttonOnClick() {
     const m_form =<HTMLSelectElement>document.getElementById(MONTH_FORM_ID);
@@ -18,21 +19,13 @@ function buttonOnClick() {
 
     callSolver(month, day).then(result => {
         console.log(result);
-        renderBoard(result);
+        renderTable(month, day, result);
     })
 }
 
 function resetBoard() {
-    let board = document.getElementById(BOARD_ID);
-    board.innerText = "Searching...";
-
     let hint = document.getElementById(HINT_ID);
     hint.innerText = "";
-}
-
-function renderBoard(s: string) {
-    let board = document.getElementById(BOARD_ID);
-    board.innerText = s;
 }
 
 async function callSolver(month: number, day: number): Promise<string> {
@@ -78,10 +71,62 @@ function addOptions() {
     d_form.selectedIndex = today.getDate() - 1;
 }
 
+function renderTable(month: number, day: number, board_str: string) {
+    const HEIGHT = 7;
+    const WIDTH = 7;
+    const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const COLOR_DICT = {
+        "0": "crimson",
+        "1": "pink",
+        "2": "indigo",
+        "3": "cyan",
+        "4": "teal",
+        "5": "green",
+        "6": "palegoldenrod",
+        "7": "orange",
+        "M": "tan",
+        "D": "tan",
+        "#": "white",
+    };
+
+    let board = [];
+    for (const l of board_str.trim().split("\n")) {
+        const cs = l.trim().split(" ");
+        if (cs.length != WIDTH) {
+            console.log("unexpected board width: ", cs);
+        }
+        board.push(cs);
+    }
+    if (board.length != HEIGHT) {
+        console.log("unexpected board height: ", board.length, board);
+    }
+
+    const table = <HTMLTableElement>document.getElementById(BOARD_TABLE_ID);
+    table.innerText = "";
+    for (let i = 0; i < HEIGHT; i++) {
+        let row = <HTMLTableRowElement>table.insertRow(i);
+        for (let j = 0; j < WIDTH; j++) {
+            let cell = row.insertCell(j);
+            let div = document.createElement("div");
+            div.className = "cell";
+            let color = COLOR_DICT[board[i][j]];
+            div.style.backgroundColor = color;
+
+            if (board[i][j] === "M") {
+                div.innerText = MONTHS[month-1].toString();
+            } else if (board[i][j] === "D") {
+                div.innerText = day.toString();
+            }
+
+
+            cell.appendChild(div);
+        }
+    }
+}
 
 
 function initialize() {
-    document.getElementById("find-button").onclick=buttonOnClick;
+    document.getElementById(SOLVE_BUTTON_ID).onclick=buttonOnClick;
 
     addOptions();
 }
