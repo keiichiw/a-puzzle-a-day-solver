@@ -46,7 +46,7 @@ async function callSolver(month: number, day: number, allow_flip: boolean): Prom
 }
 
 function addOptions() {
-    const months = ["January", "Feburary", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
     const m_form =<HTMLSelectElement>document.getElementById(MONTH_FORM_ID);
     months.forEach(m => {
