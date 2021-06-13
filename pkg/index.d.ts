@@ -1,17 +1,15 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
-* @param {number} mx
-* @param {number} my
-* @param {number} dx
-* @param {number} dy
+* @param {number} m
+* @param {number} d
 */
-export function greet(mx: number, my: number, dx: number, dy: number): void;
+export function greet(m: number, d: number): void;
 /**
-* @param {number} mx
-* @param {number} my
-* @param {number} dx
-* @param {number} dy
+* month: 1~12, day: 1~31
+* @param {number} month
+* @param {number} day
+* @param {boolean} allow_flip
 * @returns {string}
 */
-export function solution(mx: number, my: number, dx: number, dy: number): string;
+export function find_solution(month: number, day: number, allow_flip: boolean): string;

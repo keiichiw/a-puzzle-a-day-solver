@@ -18,13 +18,11 @@ function getStringFromWasm0(ptr, len) {
     return cachedTextDecoder.decode(getUint8Memory0().subarray(ptr, ptr + len));
 }
 /**
-* @param {number} mx
-* @param {number} my
-* @param {number} dx
-* @param {number} dy
+* @param {number} m
+* @param {number} d
 */
-export function greet(mx, my, dx, dy) {
-    wasm.greet(mx, my, dx, dy);
+export function greet(m, d) {
+    wasm.greet(m, d);
 }
 
 let cachegetInt32Memory0 = null;
@@ -35,16 +33,16 @@ function getInt32Memory0() {
     return cachegetInt32Memory0;
 }
 /**
-* @param {number} mx
-* @param {number} my
-* @param {number} dx
-* @param {number} dy
+* month: 1~12, day: 1~31
+* @param {number} month
+* @param {number} day
+* @param {boolean} allow_flip
 * @returns {string}
 */
-export function solution(mx, my, dx, dy) {
+export function find_solution(month, day, allow_flip) {
     try {
         const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
-        wasm.solution(retptr, mx, my, dx, dy);
+        wasm.find_solution(retptr, month, day, allow_flip);
         var r0 = getInt32Memory0()[retptr / 4 + 0];
         var r1 = getInt32Memory0()[retptr / 4 + 1];
         return getStringFromWasm0(r0, r1);
