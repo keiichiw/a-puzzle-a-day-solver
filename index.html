@@ -19,6 +19,7 @@
         <main>
             <div class="container" id="main-container" >
                 This is an unofficial solver of <a href="https://www.dragonfjord.com/product/a-puzzle-a-day/">A-Puzzle-A-Day</a>.
+                You can find one of solutions to the specified day's layout.
                 <div class="row">
                     <div class="col-xs-12 col-md-6">
                         <select class="col-md-1 form-select" id="month-form"></select>
@@ -29,12 +30,13 @@
                 </div>
                 <div class="row">
                     <div class="col-6 col-md-4">
-                        <button id="find-button" class="btn btn-primary">Solve!</button>
+                        <button id="solve-button" class="btn btn-primary">Solve!</button>
                     </div>
                 </div>
                 <div id="hint"></div>
                 <div id="board"></div>
-            </div>
+                <table id="board-table"></table>
+           </div>
         </main>
         <script src="./dist/main.js"></script>
     </body>
