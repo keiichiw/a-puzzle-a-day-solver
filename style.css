@@ -33,6 +33,18 @@ html {
     padding-left: 40px;
 }
 
+#hint {
+    display: flex;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: monospace;
+    color: gray;
+}
 
 #board {
     display: flex;
