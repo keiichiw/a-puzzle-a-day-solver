@@ -1,6 +1,10 @@
-html {
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&family=Roboto+Mono:wght@500&display=swap');
+
+body {
     font-family: "Open Sans", sans-serif;
+    font-size: 1rem;
 }
+
 
 .container {
     margin-top: auto;
@@ -85,6 +89,8 @@ td .cell {
     left: 0;
     right: 0;
     background: #DCB579;
-    font-family: Arial, Helvetica, sans-serif;
+    font-size: 3vw;
+    line-height: 5vw;
+    font-family: 'Roboto Mono', monospace;
     vertical-align: middle;
 }
