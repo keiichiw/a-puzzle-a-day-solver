@@ -4,6 +4,21 @@ on:
     branches:
       - main
 jobs:
+  cargo-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+      - name: cargo clippy
+        run: |
+          cargo clippy --all-features --all-targets --workspace -- -D warnings
+      - name: cargo test
+        run: |
+          cargo test --workspace
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:

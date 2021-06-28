@@ -38,8 +38,8 @@ impl Block {
     pub fn from_strs(b: &[&str]) -> Result<Self> {
         let mut ps = vec![];
 
-        for i in 0..b.len() {
-            for (j, c) in b[i].chars().enumerate() {
+        for (i, line) in b.iter().enumerate() {
+            for (j, c) in line.chars().enumerate() {
                 if c == '#' {
                     ps.push(Point::new(i as i32, j as i32));
                 }
@@ -145,13 +145,13 @@ mod tests {
     #[test]
     fn test_rot_bar() {
         #[rustfmt::skip]
-        let bar = Block::from_strs(&vec![
+        let bar = Block::from_strs(&[
             "#",
             "#",
             "#"
         ]).unwrap();
         #[rustfmt::skip]
-        let minus = Block::from_strs(&vec![
+        let minus = Block::from_strs(&[
             "###",
         ]).unwrap();
 
@@ -163,13 +163,13 @@ mod tests {
     #[test]
     fn test_bar_padding() {
         #[rustfmt::skip]
-        let bar1 = Block::from_strs(&vec![
+        let bar1 = Block::from_strs(&[
             "#",
             "#",
             "#"
         ]).unwrap();
         #[rustfmt::skip]
-        let bar2 = Block::from_strs(&vec![
+        let bar2 = Block::from_strs(&[
             "...#...",
             "...#",
             "...#..."

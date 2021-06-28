@@ -14,10 +14,7 @@ pub enum State {
 
 impl State {
     pub fn is_fill(&self) -> bool {
-        match self {
-            Self::Fill(_) => true,
-            _ => false,
-        }
+        matches!(self, Self::Fill(_))
     }
 }
 
@@ -42,7 +39,7 @@ impl fmt::Display for Board {
             for j in 0..self.width() {
                 write!(f, "{} ", self.board[i][j])?;
             }
-            writeln!(f, "")?;
+            writeln!(f)?;
         }
         Ok(())
     }
@@ -144,7 +141,7 @@ mod tests {
 
     #[test]
     fn test_fill() {
-        let mut board = Board::new_with_walls(2, 2, &vec![]);
+        let mut board = Board::new_with_walls(2, 2, &[]);
 
         #[rustfmt::skip]
         let v = vec![
@@ -167,7 +164,7 @@ mod tests {
 
     #[test]
     fn test_overlap() {
-        let mut board = Board::new_with_walls(2, 2, &vec![]);
+        let mut board = Board::new_with_walls(2, 2, &[]);
 
         #[rustfmt::skip]
         let v = vec![

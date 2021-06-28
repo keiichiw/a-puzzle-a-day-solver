@@ -70,7 +70,7 @@ fn dfs(
         let blk = blocks[i].clone();
         available_blocks.remove(&i);
         for block in blk.possible_dirs(opts.allow_flip) {
-            if let Err(_) = board.put_block(&p, i, &block) {
+            if board.put_block(&p, i, &block).is_err() {
                 continue;
             }
             moves.push((block.clone(), p));
