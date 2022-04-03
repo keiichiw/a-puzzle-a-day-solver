@@ -26,16 +26,22 @@ fn main() -> Result<()> {
         "one-solution",
         "stop searching once one solution is found",
     );
+    opts.optopt(
+        "t",
+        "type",
+        "puzzle type. 'd' for 'DragonFjord' or 'j' for 'JarringWords' (default='d')",
+        "[d|j]",
+    );
     opts.optflag("h", "help", "print this help menu");
     let matches = match opts.parse(&args[1..]) {
         Ok(m) => m,
         Err(f) => {
-            println!("{}", opts.short_usage(&program));
+            println!("{}", opts.usage(&program));
             bail!(f.to_string())
         }
     };
     if matches.opt_present("h") {
-        println!("{}", opts.short_usage(&program));
+        println!("{}", opts.usage(&program));
         return Ok(());
     }
 
@@ -70,8 +76,12 @@ fn main() -> Result<()> {
         Point::new(x as i32, y as i32)
     };
 
+    let typ = matches
+        .opt_get::<PuzzleType>("type")?
+        .unwrap_or(PuzzleType::DragonFjord);
+
     let board = Board::new_from_day_pos(month_pos, day_pos);
-    let blocks = Block::get_blocks();
+    let blocks = Block::get_blocks(typ);
 
     let sols = solve(&board, &blocks, &opts);
     if sols.is_empty() {

@@ -28,7 +28,7 @@ pub fn find_solution(month: i32, day: i32, allow_flip: bool) -> String {
     };
 
     let board = Board::new_from_day_pos(m, d);
-    let blocks = Block::get_blocks();
+    let blocks = Block::get_blocks(PuzzleType::DragonFjord);
     let opts = SolverOptions {
         allow_flip,
         one_solution: true,

@@ -1,10 +1,31 @@
 use std::cmp::{Eq, Ord, PartialEq, PartialOrd};
 use std::collections::BTreeSet;
 use std::fmt;
+use std::str::FromStr;
 
-use anyhow::Result;
+use anyhow::{bail, Result};
 
 use crate::point::Point;
+
+#[derive(Debug, Clone, Copy)]
+pub enum PuzzleType {
+    /// DragonFjord's [A-Puzzle-A-Day](https://www.dragonfjord.com/product/a-puzzle-a-day/).
+    DragonFjord = 0,
+    /// JarringWords's [Calendar Puzzle](https://www.etsy.com/jp/listing/1032608229/).
+    JarringWords = 1,
+}
+
+impl FromStr for PuzzleType {
+    type Err = anyhow::Error;
+
+    fn from_str(s: &str) -> Result<Self> {
+        match s {
+            "d" | "D" | "dragonfjord" | "DragonFjord" => Ok(Self::DragonFjord),
+            "j" | "J" | "jarringwords" | "JarringWords" => Ok(Self::JarringWords),
+            _ => bail!("'{}' is invalid puzzle type", s),
+        }
+    }
+}
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Block {
@@ -31,6 +52,36 @@ impl fmt::Display for Block {
             writeln!(f, "{:?}", line)?;
         }
         Ok(())
+    }
+}
+
+#[derive(Debug, Clone, Copy)]
+enum Piece {
+    HexRect, // Hexomino, Rectangle
+    PentL,   // Pentomino, L
+    PentN,   // Pentomino, N
+    PentP,   // Pentomino, P
+    PentT,   // Pentomino, T
+    PentU,   // Pentomino, U
+    PentV,   // Pentomino, V
+    PentY,   // Pentomino, Y
+    PentZ,   // Pentomino, Z
+}
+
+impl From<Piece> for Block {
+    fn from(p: Piece) -> Self {
+        const BLOCK_SETS: [&[&str]; 9] = [
+            &["###", "###"],           // Hexomino, Rectangle
+            &["##", ".#", ".#", ".#"], // Pentomino, L
+            &["#.", "##", ".#", ".#"], // Pentomino, N
+            &["##.", "###"],           // Pentomino, P
+            &["###", ".#.", ".#."],    // Pentomino, T
+            &["#.#", "###"],           // Pentomino, U
+            &["###", "#..", "#.."],    // Pentomino, V
+            &["#.", "##", "#.", "#."], // Pentomino, Y
+            &["##.", ".#.", ".##"],    // Pentomino, Z
+        ];
+        Self::from_strs(BLOCK_SETS[p as usize]).unwrap()
     }
 }
 
@@ -80,21 +131,19 @@ impl Block {
         s
     }
 
-    pub fn get_blocks() -> Vec<Self> {
-        [
-            vec!["###", "#..", "#.."],
-            vec!["#.#", "###"],
-            vec!["##.", ".#.", ".##"],
-            vec!["#.", "##", "#.", "#."],
-            vec!["#.", "##", ".#", ".#"],
-            vec!["##", ".#", ".#", ".#"],
-            vec!["##.", "###"],
-            vec!["###", "###"],
-        ]
-        .iter()
-        .map(|b| Block::from_strs(&b))
-        .collect::<Result<Vec<_>>>()
-        .unwrap()
+    pub fn get_blocks(typ: PuzzleType) -> Vec<Self> {
+        use Piece::*;
+        let pieces = match typ {
+            PuzzleType::DragonFjord => {
+                // DragonFjord uses `PentZ`
+                [HexRect, PentL, PentN, PentP, PentU, PentV, PentY, PentZ]
+            }
+            PuzzleType::JarringWords => {
+                // JarringWords uses `PentT`
+                [HexRect, PentL, PentN, PentP, PentU, PentV, PentY, PentT]
+            }
+        };
+        pieces.iter().map(|p| Self::from(*p)).collect::<Vec<_>>()
     }
 
     fn normalize(ps: &mut [Point]) {
