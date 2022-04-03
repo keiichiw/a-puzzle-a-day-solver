@@ -124,7 +124,7 @@ mod tests {
     fn test_solve_jan1() {
         // January 1
         let board = Board::new_from_day_pos(Point::new(0, 0), Point::new(2, 0));
-        let blocks = Block::get_blocks();
+        let blocks = Block::get_blocks(PuzzleType::DragonFjord);
         let opts = SolverOptions {
             allow_flip: false,
             one_solution: false,
@@ -133,10 +133,22 @@ mod tests {
     }
 
     #[test]
+    fn test_solve_jan1_jarringwords() {
+        // January 1
+        let board = Board::new_from_day_pos(Point::new(0, 0), Point::new(2, 0));
+        let blocks = Block::get_blocks(PuzzleType::JarringWords);
+        let opts = SolverOptions {
+            allow_flip: false,
+            one_solution: false,
+        };
+        assert_eq!(solve(&board, &blocks, &opts).len(), 4);
+    }
+
+    #[test]
     fn test_solve_dec29() {
         // December 29
         let board = Board::new_from_day_pos(Point::new(1, 5), Point::new(6, 0));
-        let blocks = Block::get_blocks();
+        let blocks = Block::get_blocks(PuzzleType::DragonFjord);
         let mut opts = SolverOptions {
             allow_flip: false,
             one_solution: true,
