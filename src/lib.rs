@@ -8,14 +8,8 @@ extern "C" {
 }
 
 #[wasm_bindgen]
-pub fn greet(m: i32, d: i32) {
-    let s = find_solution(m, d, false);
-    alert(&format!("Hello, World!\n{}", s));
-}
-
-#[wasm_bindgen]
 /// month: 1~12, day: 1~31
-pub fn find_solution(month: i32, day: i32, allow_flip: bool) -> String {
+pub fn find_solution(month: i32, day: i32, puzzle_type: i32, allow_flip: bool) -> String {
     let m = {
         let x = if month <= 6 { 0 } else { 1 };
         let y = (month - 1) - x * 6;
@@ -26,9 +20,14 @@ pub fn find_solution(month: i32, day: i32, allow_flip: bool) -> String {
         let y = (day - 1) % 7;
         Point::new(x as i32, y as i32)
     };
+    let puzzle_type = if puzzle_type == 0 {
+        PuzzleType::DragonFjord
+    } else {
+        PuzzleType::JarringWords
+    };
 
     let board = Board::new_from_day_pos(m, d);
-    let blocks = Block::get_blocks();
+    let blocks = Block::get_blocks(puzzle_type);
     let opts = SolverOptions {
         allow_flip,
         one_solution: true,

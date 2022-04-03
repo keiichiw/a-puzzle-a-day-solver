@@ -9,17 +9,25 @@ const HINT_ID: string = "hint";
 const BOARD_TABLE_ID: string = "board-table";
 const MONTH_FORM_ID: string = "month-form";
 const DAY_FORM_ID: string = "day-form";
+const PUZZLE_TYPE_FORM_ID: string = "puzzle-type-form";
 const SOLVE_BUTTON_ID: string = "solve-button";
+
+enum PuzzleType {
+    DragonFjord,
+    JarringWords,
+}
 
 function buttonOnClick() {
     const m_form =<HTMLSelectElement>document.getElementById(MONTH_FORM_ID);
     const month = m_form.selectedIndex + 1;
     const d_form =<HTMLSelectElement>document.getElementById(DAY_FORM_ID);
     const day = d_form.selectedIndex + 1;
+    const p_form =<HTMLSelectElement>document.getElementById(PUZZLE_TYPE_FORM_ID);
+    const puzzle_type = p_form.selectedIndex;
 
     resetBoard();
 
-    callSolver(month, day).then(result => {
+    callSolver(month, day, puzzle_type).then(result => {
         console.log(result);
         renderTable(month, day, result);
     })
@@ -30,7 +38,7 @@ function resetBoard() {
     hint.innerText = "";
 }
 
-async function callSolver(month: number, day: number): Promise<string> {
+async function callSolver(month: number, day: number, puzzle_type: PuzzleType): Promise<string> {
     if (!(1 <= month && month <= 12 && 1 <= day && day <= 31)) {
 
         throw new Error("Error: invalid date: " + month + ", " + day);
@@ -38,7 +46,7 @@ async function callSolver(month: number, day: number): Promise<string> {
 
     // If there is a solution without flipping, return it.
     let r = await rust.then(m => {
-        return m.find_solution(month, day, false /* allow_flip */);
+        return m.find_solution(month, day, puzzle_type, false /* allow_flip */);
     });
     if (r != "") {
         return r;
@@ -48,7 +56,7 @@ async function callSolver(month: number, day: number): Promise<string> {
     hint.innerText = "(No solution without flipping pieces.)";
 
     return await rust.then(m => {
-        return m.find_solution(month, day, true);
+        return m.find_solution(month, day, puzzle_type, true);
     });
 }
 
@@ -71,6 +79,15 @@ function addOptions() {
         d_form.add(opt);
     }
     d_form.selectedIndex = today.getDate() - 1;
+
+
+    const p_form =<HTMLSelectElement>document.getElementById(PUZZLE_TYPE_FORM_ID);
+    ["DragonFjord's A-Puzzle-A-Day", "JarringWords's Calendar Puzzle"].forEach(typ => {
+        const opt = document.createElement("option");
+        opt.text = typ;
+        p_form.add(opt);
+    });
+    p_form.selectedIndex = 0;
 }
 
 function renderTable(month: number, day: number, board_str: string) {
