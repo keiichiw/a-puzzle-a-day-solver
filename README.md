@@ -6,6 +6,8 @@ The web version of this tool is available [here](http://keiichiw.github.io/a-puz
 
 The solver's algorithm is implemented in Rust and its code is compiled to WebAssembly to run on browsers.
 
+Note that this is my personal hobby project and has nothing to do with the authors of the puzzles or my employer.
+
 ## For Developers
 
 ### CLI
