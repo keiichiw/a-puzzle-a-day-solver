@@ -1,12 +1,12 @@
 # A-Puzzle-A-Day Solver
 
-A solver of the following calendar puzzles:
-* [DragonFjord](https://www.dragonfjord.com/)'s [A-Puzzle-A-Day](https://www.dragonfjord.com/product/a-puzzle-a-day/).
-* [JarringWords](http://www.jarringwords.com/)'s [calendar puzzle](https://www.etsy.com/jp/listing/1032608229/).
+A solver of [DragonFjord](https://www.dragonfjord.com/)'s [A-Puzzle-A-Day](https://www.dragonfjord.com/product/a-puzzle-a-day/) and similar puzzle(s).
 
 The web version of this tool is available [here](http://keiichiw.github.io/a-puzzle-a-day-solver/).
 
 The solver's algorithm is implemented in Rust and its code is compiled to WebAssembly to run on browsers.
+
+Note that this is my personal hobby project and has nothing to do with the authors of the puzzles or my employer.
 
 ## For Developers
 
