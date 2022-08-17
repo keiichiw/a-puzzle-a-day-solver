@@ -26,7 +26,7 @@ pub fn find_solution(month: i32, day: i32, puzzle_type: i32, allow_flip: bool) -
         PuzzleType::JarringWords
     };
 
-    let board = Board::new_from_day_pos(m, d);
+    let board = Board::new_from_day_pos(m, d, puzzle_type);
     let blocks = Block::get_blocks(puzzle_type);
     let opts = SolverOptions {
         allow_flip,
