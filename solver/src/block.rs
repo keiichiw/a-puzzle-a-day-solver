@@ -13,7 +13,7 @@ pub enum PuzzleType {
     DragonFjord = 0,
     /// JarringWords's [Calendar Puzzle](https://www.etsy.com/jp/listing/1032608229/).
     JarringWords = 1,
-	/// Tetromino Type [Puzzle containing quad pieces](https://puzzleparadise.net/listing/puzzle-calendar-solve-for-each-day-of-the-year-cherry-pieces-and-walnut-border/107535)
+    /// Tetromino Type [Puzzle containing quad pieces](https://puzzleparadise.net/listing/puzzle-calendar-solve-for-each-day-of-the-year-cherry-pieces-and-walnut-border/107535)
     Tetromino = 2,
 }
 
@@ -60,22 +60,21 @@ impl fmt::Display for Block {
 
 #[derive(Debug, Clone, Copy)]
 enum Piece {
-    HexRect, // Hexomino, Rectangle
-    PentL,   // Pentomino, L
-    PentN,   // Pentomino, N
-    PentP,   // Pentomino, P
-    PentT,   // Pentomino, T
-    PentU,   // Pentomino, U
-    PentV,   // Pentomino, V
-    PentY,   // Pentomino, Y
-    PentZ,   // Pentomino, Z
-    TetSquare,   // Tetromino, Square
-    TetL,   // Tetromino, L
-    TetT,   // Tetromino, T
-    TetI,   // Tetromino, I
-    TetZ,   // Tetromino, Z 
+    HexRect,   // Hexomino, Rectangle
+    PentL,     // Pentomino, L
+    PentN,     // Pentomino, N
+    PentP,     // Pentomino, P
+    PentT,     // Pentomino, T
+    PentU,     // Pentomino, U
+    PentV,     // Pentomino, V
+    PentY,     // Pentomino, Y
+    PentZ,     // Pentomino, Z
+    TetSquare, // Tetromino, Square
+    TetL,      // Tetromino, L
+    TetT,      // Tetromino, T
+    TetI,      // Tetromino, I
+    TetZ,      // Tetromino, Z
 }
-
 
 impl From<Piece> for Block {
     fn from(p: Piece) -> Self {
@@ -90,11 +89,10 @@ impl From<Piece> for Block {
             &["#.", "##", "#.", "#."], // Pentomino, Y
             &["##.", ".#.", ".##"],    // Pentomino, Z
             &["##", "##"],             // Tetromino, Square
-         	&["##", ".#", ".#"],       // Tetromino, L
+            &["##", ".#", ".#"],       // Tetromino, L
             &["###", ".#."],           // Tetromino, T
             &["####"],                 // Tetromino, I
-            &[".##", "##."],           // Tetromino, Z 
-
+            &[".##", "##."],           // Tetromino, Z
         ];
         Self::from_strs(BLOCK_SETS[p as usize]).unwrap()
     }
@@ -148,7 +146,7 @@ impl Block {
 
     pub fn get_blocks(typ: PuzzleType) -> Vec<Self> {
         use Piece::*;
-		let pieces = match typ {
+        let pieces = match typ {
             PuzzleType::DragonFjord => {
                 // DragonFjord uses `PentZ`
                 vec![HexRect, PentL, PentN, PentP, PentU, PentV, PentY, PentZ]
@@ -158,8 +156,10 @@ impl Block {
                 vec![HexRect, PentL, PentN, PentP, PentU, PentV, PentY, PentT]
             }
             PuzzleType::Tetromino => {
-                // Tetromino uses a bunch of tetrominoes 
-                vec![HexRect, PentV, PentU, PentP, TetSquare, TetL, TetT, TetZ, TetI]
+                // Tetromino uses a bunch of tetrominoes
+                vec![
+                    HexRect, PentV, PentU, PentP, TetSquare, TetL, TetT, TetZ, TetI,
+                ]
             }
         };
         pieces.iter().map(|p| Self::from(*p)).collect::<Vec<_>>()

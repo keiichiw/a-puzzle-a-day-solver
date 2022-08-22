@@ -8,8 +8,6 @@ const MONTH_NAMES: [&str; 12] = [
     "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
 ];
 
-
-
 fn main() -> Result<()> {
     let args: Vec<String> = env::args().collect();
     let program = args[0].clone();
