@@ -57,15 +57,7 @@ impl Board {
 
     pub fn new_from_day_pos(month_pos: Point, day_pos: Point, puzzle_type: PuzzleType) -> Self {
         let mut walls = match puzzle_type {
-            PuzzleType::DragonFjord => [
-                Point::new(0, 6),
-                Point::new(1, 6),
-                Point::new(6, 3),
-                Point::new(6, 4),
-                Point::new(6, 5),
-                Point::new(6, 6),
-            ],
-            PuzzleType::JarringWords => [
+            PuzzleType::DragonFjord | PuzzleType::JarringWords => [
                 Point::new(0, 6),
                 Point::new(1, 6),
                 Point::new(6, 3),
