@@ -15,7 +15,7 @@ const SOLVE_BUTTON_ID: string = "solve-button";
 enum PuzzleType {
     DragonFjord,
     JarringWords,
-	Tetromino,
+    Tetromino,
 }
 
 function buttonOnClick() {
