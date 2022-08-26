@@ -59,6 +59,7 @@ module.exports = {
     ],
     mode: 'development',
     experiments: {
+        executeModule: true,
         outputModule: true,
         syncWebAssembly: true,
         topLevelAwait: true,
@@ -67,11 +68,7 @@ module.exports = {
     },
     devServer: {
         compress: true,
-        devMiddleware : {
-            publicPath: "/dist/",
-        },
-        static: {
-            directory: path.join(__dirname, "/public"),
-        },
+        publicPath: "/dist/",
+        contentBase: path.join(__dirname, 'public'),
     },
 };

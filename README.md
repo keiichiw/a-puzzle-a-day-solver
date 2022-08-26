@@ -10,12 +10,6 @@ Note that this is my personal hobby project and has nothing to do with the autho
 
 ## For Developers
 
-## Requirements
-
-* [Rust](https://www.rust-lang.org/)
-* [wasm-pack](https://rustwasm.github.io/docs/wasm-pack/)
-* [Node.js](https://nodejs.org/)
-
 ### CLI
 
 ```
