@@ -1,10 +1,12 @@
-name: Build and Deploy
+name: Build and Test
 on:
   push:
     branches:
       - main
+  pull_request:
+  workflow_call:
 jobs:
-  build-and-deploy:
+  build_and_test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -30,9 +32,3 @@ jobs:
           npm install
           npm run release-build
           rm ./public/pkg/.gitignore
-      - name: Deploy
-        uses: JamesIves/github-pages-deploy-action@3.6.2
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: gh-pages
-          FOLDER: public

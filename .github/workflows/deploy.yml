@@ -1,0 +1,17 @@
+name: Deploy
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build-and-test:
+    uses: ./.github/workflows/build.yml
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@3.6.2
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: gh-pages
+          FOLDER: public
