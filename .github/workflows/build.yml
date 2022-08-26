@@ -1,10 +1,7 @@
 name: Build and Test
 on:
   push:
-    branches:
-      - main
   pull_request:
-  workflow_call:
 jobs:
   build_and_test:
     runs-on: ubuntu-latest
@@ -32,9 +29,3 @@ jobs:
           npm install
           npm run release-build
           rm ./public/pkg/.gitignore
-          ls -R
-      - name: Create build artifact
-        uses: actions/upload-artifact@master
-        with:
-          name: build-artifact
-          path: public/dist

@@ -9,13 +9,27 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Build and Test
-        uses: ./.github/workflows/build.yml@main
-      - name: Download build artifact
-        uses: actions/download-artifact@master
+      - name: Set up Node
+        uses: actions/setup-node@v2
         with:
-          name: build-artifact
-          path: public/dist
+          node-version: '18'
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+      - name: cargo clippy
+        run: |
+          cargo clippy --all-features --all-targets --workspace -- -D warnings
+      - name: cargo test
+        run: |
+          cargo test --workspace
+      - name: Install wasm-pack
+        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+      - name: Install & Build
+        run: |
+          npm install
+          npm run release-build
+          rm ./public/pkg/.gitignore
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@3.6.2
         with:
