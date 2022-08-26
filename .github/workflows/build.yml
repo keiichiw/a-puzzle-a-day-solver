@@ -33,3 +33,8 @@ jobs:
           npm run release-build
           rm ./public/pkg/.gitignore
           ls -R
+      - name: Create build artifact
+        uses: actions/upload-artifact@master
+        with:
+          name: build-artifact
+          path: public/dist
