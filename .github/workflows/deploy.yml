@@ -4,11 +4,11 @@ on:
     branches:
       - main
 jobs:
-  build-and-test:
-    uses: ./.github/workflows/build.yml
   deploy:
     runs-on: ubuntu-latest
     steps:
+     - name: Build and Test
+        uses: ./.github/workflows/build.yml
       - name: Download build artifact
         uses: actions/download-artifact@master
         with:
