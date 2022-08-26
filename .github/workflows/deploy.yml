@@ -7,7 +7,9 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-     - name: Build and Test
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Build and Test
         uses: ./.github/workflows/build.yml
       - name: Download build artifact
         uses: actions/download-artifact@master
