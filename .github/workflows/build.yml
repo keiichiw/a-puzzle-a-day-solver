@@ -32,3 +32,4 @@ jobs:
           npm install
           npm run release-build
           rm ./public/pkg/.gitignore
+          ls -R
