@@ -10,7 +10,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Build and Test
-        uses: ./.github/workflows/build.yml
+        uses: ./.github/workflows/build.yml@main
       - name: Download build artifact
         uses: actions/download-artifact@master
         with:
