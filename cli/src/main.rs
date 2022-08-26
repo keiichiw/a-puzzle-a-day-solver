@@ -29,8 +29,8 @@ fn main() -> Result<()> {
     opts.optopt(
         "t",
         "type",
-        "puzzle type. 'd' for 'DragonFjord' or 'j' for 'JarringWords' (default='d')",
-        "[d|j]",
+        "puzzle type. 'd' for 'DragonFjord', 'j' for 'JarringWords', or 't' for 'Tetromino' (default='d')",
+        "[d|j|t]",
     );
     opts.optflag("h", "help", "print this help menu");
     let matches = match opts.parse(&args[1..]) {
@@ -80,7 +80,7 @@ fn main() -> Result<()> {
         .opt_get::<PuzzleType>("type")?
         .unwrap_or(PuzzleType::DragonFjord);
 
-    let board = Board::new_from_day_pos(month_pos, day_pos);
+    let board = Board::new_from_day_pos(month_pos, day_pos, typ);
     let blocks = Block::get_blocks(typ);
 
     let sols = solve(&board, &blocks, &opts);

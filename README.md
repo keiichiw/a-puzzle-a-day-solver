@@ -1,6 +1,6 @@
 # A-Puzzle-A-Day Solver
 
-A solver of [DragonFjord](https://www.dragonfjord.com/)'s [A-Puzzle-A-Day](https://www.dragonfjord.com/product/a-puzzle-a-day/) and similar puzzle(s).
+A solver of [DragonFjord](https://www.dragonfjord.com/)'s [A-Puzzle-A-Day](https://www.dragonfjord.com/product/a-puzzle-a-day/) and similar puzzle(s) like [this one with tetrominoes](public/tetromino_pieces.jpg).
 
 The web version of this tool is available [here](http://keiichiw.github.io/a-puzzle-a-day-solver/).
 

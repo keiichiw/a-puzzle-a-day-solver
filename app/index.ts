@@ -15,6 +15,7 @@ const SOLVE_BUTTON_ID: string = "solve-button";
 enum PuzzleType {
     DragonFjord,
     JarringWords,
+    Tetromino,
 }
 
 function buttonOnClick() {
@@ -82,7 +83,7 @@ function addOptions() {
 
 
     const p_form =<HTMLSelectElement>document.getElementById(PUZZLE_TYPE_FORM_ID);
-    ["DragonFjord's A-Puzzle-A-Day", "JarringWords's Calendar Puzzle"].forEach(typ => {
+    ["DragonFjord's A-Puzzle-A-Day", "JarringWords's Calendar Puzzle", "Tetromino-type Calendar Puzzle"].forEach(typ => {
         const opt = document.createElement("option");
         opt.text = typ;
         p_form.add(opt);
@@ -103,6 +104,7 @@ function renderTable(month: number, day: number, board_str: string) {
         "5": "green",
         "6": "palegoldenrod",
         "7": "orange",
+        "8": "gray",
         "M": "tan",
         "D": "tan",
         "#": "white",

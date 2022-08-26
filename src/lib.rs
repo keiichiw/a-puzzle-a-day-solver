@@ -22,11 +22,13 @@ pub fn find_solution(month: i32, day: i32, puzzle_type: i32, allow_flip: bool) -
     };
     let puzzle_type = if puzzle_type == 0 {
         PuzzleType::DragonFjord
-    } else {
+    } else if puzzle_type==1 {
         PuzzleType::JarringWords
+    } else {
+        PuzzleType::Tetromino
     };
 
-    let board = Board::new_from_day_pos(m, d);
+    let board = Board::new_from_day_pos(m, d, puzzle_type);
     let blocks = Block::get_blocks(puzzle_type);
     let opts = SolverOptions {
         allow_flip,

@@ -3,6 +3,7 @@ use std::fmt;
 use anyhow::{bail, Result};
 
 use crate::block::Block;
+use crate::block::PuzzleType;
 use crate::point::Point;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -54,15 +55,25 @@ impl Board {
         Self { board }
     }
 
-    pub fn new_from_day_pos(month_pos: Point, day_pos: Point) -> Self {
-        let mut walls = [
-            Point::new(0, 6),
-            Point::new(1, 6),
-            Point::new(6, 3),
-            Point::new(6, 4),
-            Point::new(6, 5),
-            Point::new(6, 6),
-        ]
+    pub fn new_from_day_pos(month_pos: Point, day_pos: Point, puzzle_type: PuzzleType) -> Self {
+        let mut walls = match puzzle_type {
+            PuzzleType::DragonFjord | PuzzleType::JarringWords => [
+                Point::new(0, 6),
+                Point::new(1, 6),
+                Point::new(6, 3),
+                Point::new(6, 4),
+                Point::new(6, 5),
+                Point::new(6, 6),
+            ],
+            PuzzleType::Tetromino => [
+                Point::new(0, 6),
+                Point::new(1, 6),
+                Point::new(6, 0),
+                Point::new(6, 1),
+                Point::new(6, 2),
+                Point::new(6, 3),
+            ],
+        }
         .iter()
         .map(|p| ('#', *p))
         .collect::<Vec<_>>();
