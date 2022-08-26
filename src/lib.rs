@@ -22,7 +22,7 @@ pub fn find_solution(month: i32, day: i32, puzzle_type: i32, allow_flip: bool) -
     };
     let puzzle_type = if puzzle_type == 0 {
         PuzzleType::DragonFjord
-    } else if puzzle_type==1 {
+    } else if puzzle_type == 1 {
         PuzzleType::JarringWords
     } else {
         PuzzleType::Tetromino
