@@ -55,6 +55,8 @@ impl Board {
         Self { board }
     }
 
+    /// TODO - have variable board depending on puzzle type
+    /// TODO - have variable nubmer of wall points depending on puzzle type
     pub fn new_from_day_pos(month_pos: Point, day_pos: Point, week_pos: Point, puzzle_type: PuzzleType) -> Self {
         let mut walls = match puzzle_type {
             PuzzleType::DragonFjord | PuzzleType::JarringWords => [
