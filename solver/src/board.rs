@@ -110,17 +110,11 @@ impl Board {
         .collect::<Vec<_>>();
 
         match puzzle_type {
-            PuzzleType::DragonFjord => {
-                walls.append(&mut vec![('M', month_pos), ('D', day_pos)]);
-            }
-            PuzzleType::JarringWords => {
-                walls.append(&mut vec![('M', month_pos), ('D', day_pos)]);
-            }
-            PuzzleType::Tetromino => {
-                walls.append(&mut vec![('M', month_pos), ('D', day_pos)]);
-            }
             PuzzleType::WeekDay => {
                 walls.append(&mut vec![('M', month_pos), ('D', day_pos),('W', week_pos)]);
+            }
+            _ => {
+                walls.append(&mut vec![('M', month_pos), ('D', day_pos)]);
             }
         }
 
