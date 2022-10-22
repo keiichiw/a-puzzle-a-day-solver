@@ -21,13 +21,12 @@ fn main() -> Result<()> {
         &format!("[{}]", MONTH_NAMES.to_vec().join("|")),
     );
     opts.reqopt("d", "day", "day", "[1-31]");
-    opts.reqopt(
+    opts.optopt(
         "w",
         "week",
         "week day",
         &format!("[{}]", WEEK_DAYS.to_vec().join("|")),
     );
-
     opts.optflag("f", "allow-flip", "allow flipping pieces");
     opts.optflag(
         "o",
@@ -85,7 +84,7 @@ fn main() -> Result<()> {
     };
 
 
-    let week_str: String = matches.opt_get("week").unwrap().unwrap();
+    let week_str: String = matches.opt_get("week").unwrap().unwrap_or(String::from("Sat"));
     let week_pos = match WEEK_DAYS.iter().position(|w| *w == week_str) {
         None => {
             bail!("unexpected week name: {}", week_str);
