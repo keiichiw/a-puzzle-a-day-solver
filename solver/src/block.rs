@@ -15,6 +15,7 @@ pub enum PuzzleType {
     JarringWords = 1,
     /// Tetromino Type [Puzzle containing quad pieces](https://puzzleparadise.net/listing/puzzle-calendar-solve-for-each-day-of-the-year-cherry-pieces-and-walnut-border/107535)
     Tetromino = 2,
+    /// Weekday Type [Puzzle containing weekday pieces](https://www.amazon.com/gp/product/B09NVQSY7Q)
     WeekDay = 3
 }
 

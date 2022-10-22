@@ -29,8 +29,10 @@ pub fn find_solution(month: i32, day: i32, week:i32, puzzle_type: i32, allow_fli
         PuzzleType::DragonFjord
     } else if puzzle_type == 1 {
         PuzzleType::JarringWords
-    } else {
+    } else if puzzle_type == 2 {
         PuzzleType::Tetromino
+    } else {
+        PuzzleType::WeekDay
     };
 
     let board = Board::new_from_day_pos(m, d, w, puzzle_type);
