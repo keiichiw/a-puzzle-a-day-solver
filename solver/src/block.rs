@@ -15,6 +15,7 @@ pub enum PuzzleType {
     JarringWords = 1,
     /// Tetromino Type [Puzzle containing quad pieces](https://puzzleparadise.net/listing/puzzle-calendar-solve-for-each-day-of-the-year-cherry-pieces-and-walnut-border/107535)
     Tetromino = 2,
+    WeekDay = 3
 }
 
 impl FromStr for PuzzleType {
@@ -25,6 +26,7 @@ impl FromStr for PuzzleType {
             "d" | "D" | "dragonfjord" | "DragonFjord" => Ok(Self::DragonFjord),
             "j" | "J" | "jarringwords" | "JarringWords" => Ok(Self::JarringWords),
             "t" | "T" | "tetromino" | "Tetromino" => Ok(Self::Tetromino),
+            "w" | "W" | "weekday" | "WeekDay" => Ok(Self::WeekDay),
             _ => bail!("'{}' is invalid puzzle type", s),
         }
     }
@@ -74,11 +76,12 @@ enum Piece {
     TetT,      // Tetromino, T
     TetI,      // Tetromino, I
     TetZ,      // Tetromino, Z
+    WeekZ,     // Weekday, Z
 }
 
 impl From<Piece> for Block {
     fn from(p: Piece) -> Self {
-        const BLOCK_SETS: [&[&str]; 14] = [
+        const BLOCK_SETS: [&[&str]; 15] = [
             &["###", "###"],           // Hexomino, Rectangle
             &["##", ".#", ".#", ".#"], // Pentomino, L
             &["#.", "##", ".#", ".#"], // Pentomino, N
@@ -93,6 +96,7 @@ impl From<Piece> for Block {
             &["###", ".#."],           // Tetromino, T
             &["####"],                 // Tetromino, I
             &[".##", "##."],           // Tetromino, Z
+            &["###.", "..##"],         // WeekDay, Z
         ];
         Self::from_strs(BLOCK_SETS[p as usize]).unwrap()
     }
@@ -160,6 +164,10 @@ impl Block {
                 vec![
                     HexRect, PentV, PentU, PentP, TetSquare, TetL, TetT, TetZ, TetI,
                 ]
+            }
+            PuzzleType::WeekDay => {
+                // WeekDay uses `PentL`
+                vec![PentP, PentL, PentZ, TetZ, PentT, PentU, PentV, TetI, TetL, WeekZ]
             }
         };
         pieces.iter().map(|p| Self::from(*p)).collect::<Vec<_>>()

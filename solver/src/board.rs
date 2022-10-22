@@ -55,7 +55,7 @@ impl Board {
         Self { board }
     }
 
-    pub fn new_from_day_pos(month_pos: Point, day_pos: Point, puzzle_type: PuzzleType) -> Self {
+    pub fn new_from_day_pos(month_pos: Point, day_pos: Point, week_pos: Point, puzzle_type: PuzzleType) -> Self {
         let mut walls = match puzzle_type {
             PuzzleType::DragonFjord | PuzzleType::JarringWords => [
                 Point::new(0, 6),
@@ -64,6 +64,13 @@ impl Board {
                 Point::new(6, 4),
                 Point::new(6, 5),
                 Point::new(6, 6),
+                Point::new(7, 0),
+                Point::new(7, 1),
+                Point::new(7, 2),
+                Point::new(7, 3),
+                Point::new(7, 4),
+                Point::new(7, 5),
+                Point::new(7, 6),
             ],
             PuzzleType::Tetromino => [
                 Point::new(0, 6),
@@ -72,15 +79,37 @@ impl Board {
                 Point::new(6, 1),
                 Point::new(6, 2),
                 Point::new(6, 3),
+                Point::new(7, 0),
+                Point::new(7, 1),
+                Point::new(7, 2),
+                Point::new(7, 3),
+                Point::new(7, 4),
+                Point::new(7, 5),
+                Point::new(7, 6),
+            ],
+            PuzzleType::WeekDay => [
+                Point::new(0, 6),
+                Point::new(1, 6),
+                Point::new(7, 0),
+                Point::new(7, 1),
+                Point::new(7, 2),
+                Point::new(7, 3),
+                Point::new(7, 3),
+                Point::new(7, 3),
+                Point::new(7, 3),
+                Point::new(7, 3),
+                Point::new(7, 3),
+                Point::new(7, 3),
+                Point::new(7, 3),
             ],
         }
         .iter()
         .map(|p| ('#', *p))
         .collect::<Vec<_>>();
 
-        walls.append(&mut vec![('M', month_pos), ('D', day_pos)]);
+        walls.append(&mut vec![('M', month_pos), ('D', day_pos),('W', week_pos)]);
 
-        Board::new_with_walls(7, 7, &walls)
+        Board::new_with_walls(8, 7, &walls)
     }
 
     pub fn height(&self) -> usize {
