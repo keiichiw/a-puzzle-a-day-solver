@@ -57,7 +57,12 @@ impl Board {
 
     /// TODO - have variable board depending on puzzle type
     /// TODO - have variable nubmer of wall points depending on puzzle type
-    pub fn new_from_day_pos(month_pos: Point, day_pos: Point, week_pos: Point, puzzle_type: PuzzleType) -> Self {
+    pub fn new_from_day_pos(
+        month_pos: Point,
+        day_pos: Point,
+        week_pos: Point,
+        puzzle_type: PuzzleType,
+    ) -> Self {
         let mut walls = match puzzle_type {
             PuzzleType::DragonFjord | PuzzleType::JarringWords => [
                 Point::new(0, 6),
@@ -111,7 +116,7 @@ impl Board {
 
         match puzzle_type {
             PuzzleType::WeekDay => {
-                walls.append(&mut vec![('M', month_pos), ('D', day_pos),('W', week_pos)]);
+                walls.append(&mut vec![('M', month_pos), ('D', day_pos), ('W', week_pos)]);
             }
             _ => {
                 walls.append(&mut vec![('M', month_pos), ('D', day_pos)]);

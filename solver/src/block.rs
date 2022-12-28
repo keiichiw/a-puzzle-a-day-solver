@@ -16,7 +16,7 @@ pub enum PuzzleType {
     /// Tetromino Type [Puzzle containing quad pieces](https://puzzleparadise.net/listing/puzzle-calendar-solve-for-each-day-of-the-year-cherry-pieces-and-walnut-border/107535)
     Tetromino = 2,
     /// Weekday Type [Puzzle containing weekday pieces](https://www.amazon.com/gp/product/B09NVQSY7Q)
-    WeekDay = 3
+    WeekDay = 3,
 }
 
 impl FromStr for PuzzleType {
@@ -168,7 +168,9 @@ impl Block {
             }
             PuzzleType::WeekDay => {
                 // WeekDay uses `PentL`
-                vec![PentP, PentL, PentZ, TetZ, PentT, PentU, PentV, TetI, TetL, WeekZ]
+                vec![
+                    PentP, PentL, PentZ, TetZ, PentT, PentU, PentV, TetI, TetL, WeekZ,
+                ]
             }
         };
         pieces.iter().map(|p| Self::from(*p)).collect::<Vec<_>>()

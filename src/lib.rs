@@ -9,7 +9,13 @@ extern "C" {
 
 #[wasm_bindgen]
 /// month: 1~12, day: 1~31
-pub fn find_solution(month: i32, day: i32, week:i32, puzzle_type: i32, allow_flip: bool) -> String {
+pub fn find_solution(
+    month: i32,
+    day: i32,
+    week: i32,
+    puzzle_type: i32,
+    allow_flip: bool,
+) -> String {
     let m = {
         let x = if month <= 6 { 0 } else { 1 };
         let y = (month - 1) - x * 6;
@@ -21,8 +27,8 @@ pub fn find_solution(month: i32, day: i32, week:i32, puzzle_type: i32, allow_fli
         Point::new(x as i32, y as i32)
     };
     let w = {
-        let x = if week<4 {week+3} else {week};
-        let y = if week<4 {6} else {7};
+        let x = if week < 4 { week + 3 } else { week };
+        let y = if week < 4 { 6 } else { 7 };
         Point::new(x as i32, y as i32)
     };
     let puzzle_type = if puzzle_type == 0 {
