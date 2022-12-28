@@ -60,7 +60,7 @@ impl Board {
     pub fn new_from_day_pos(
         month_pos: Point,
         day_pos: Point,
-        week_pos: Point,
+        week_pos: Option<Point>,
         puzzle_type: PuzzleType,
     ) -> Self {
         let mut walls = match puzzle_type {
@@ -116,7 +116,14 @@ impl Board {
 
         match puzzle_type {
             PuzzleType::WeekDay => {
-                walls.append(&mut vec![('M', month_pos), ('D', day_pos), ('W', week_pos)]);
+                walls.append(&mut vec![
+                    ('M', month_pos),
+                    ('D', day_pos),
+                    (
+                        'W',
+                        week_pos.expect("week_pos must not be None for WeekDay puzzle"),
+                    ),
+                ]);
             }
             _ => {
                 walls.append(&mut vec![('M', month_pos), ('D', day_pos)]);

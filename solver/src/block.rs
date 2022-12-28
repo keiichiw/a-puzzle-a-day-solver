@@ -7,7 +7,7 @@ use anyhow::{bail, Result};
 
 use crate::point::Point;
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum PuzzleType {
     /// DragonFjord's [A-Puzzle-A-Day](https://www.dragonfjord.com/product/a-puzzle-a-day/).
     DragonFjord = 0,

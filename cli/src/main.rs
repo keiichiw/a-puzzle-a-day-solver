@@ -83,24 +83,37 @@ fn main() -> Result<()> {
         Point::new(x as i32, y as i32)
     };
 
-    let week_str: String = matches
-        .opt_get("week")
-        .unwrap()
-        .unwrap_or(String::from("Sat"));
-    let week_pos = match WEEK_DAYS.iter().position(|w| *w == week_str) {
-        None => {
-            bail!("unexpected week name: {}", week_str);
-        }
-        Some(p) => {
-            let x = if p < 4 { 6 } else { 7 };
-            let y = if p < 4 { p + 3 } else { p };
-            Point::new(x as i32, y as i32)
-        }
-    };
-
     let typ = matches
         .opt_get::<PuzzleType>("type")?
         .unwrap_or(PuzzleType::DragonFjord);
+
+    let week_pos = match typ {
+        PuzzleType::WeekDay => {
+            let week_str: String = matches
+                .opt_get("week")
+                .unwrap()
+                .context("weekday is not passed")?;
+            match WEEK_DAYS.iter().position(|w| *w == week_str) {
+                None => {
+                    bail!("unexpected week name: {}", week_str);
+                }
+                Some(p) => {
+                    let x = if p < 4 { 6 } else { 7 };
+                    let y = if p < 4 { p + 3 } else { p };
+                    Some(Point::new(x as i32, y as i32))
+                }
+            }
+        }
+        _ => {
+            if let Ok(Some(s)) = matches.opt_get::<String>("week") {
+                bail!(
+                    "weekday option \"{s}\" is given but not supported for {:?}",
+                    typ
+                );
+            }
+            None
+        }
+    };
 
     let board = Board::new_from_day_pos(month_pos, day_pos, week_pos, typ);
     let blocks = Block::get_blocks(typ);

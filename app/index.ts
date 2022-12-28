@@ -9,6 +9,7 @@ const HINT_ID: string = "hint";
 const BOARD_TABLE_ID: string = "board-table";
 const MONTH_FORM_ID: string = "month-form";
 const DAY_FORM_ID: string = "day-form";
+const WEEKDAY_FORM_ID: string = "weekday-form";
 const PUZZLE_TYPE_FORM_ID: string = "puzzle-type-form";
 const SOLVE_BUTTON_ID: string = "solve-button";
 
@@ -24,14 +25,16 @@ function buttonOnClick() {
     const month = m_form.selectedIndex + 1;
     const d_form =<HTMLSelectElement>document.getElementById(DAY_FORM_ID);
     const day = d_form.selectedIndex + 1;
+    const w_form =<HTMLSelectElement>document.getElementById(WEEKDAY_FORM_ID);
+    const weekday = w_form.selectedIndex;
     const p_form =<HTMLSelectElement>document.getElementById(PUZZLE_TYPE_FORM_ID);
     const puzzle_type = p_form.selectedIndex;
 
     resetBoard();
 
-    callSolver(month, day, puzzle_type).then(result => {
+    callSolver(month, day, weekday, puzzle_type).then(result => {
         console.log(result);
-        renderTable(month, day, result);
+        renderTable(month, day, weekday, result);
     })
 }
 
@@ -40,15 +43,15 @@ function resetBoard() {
     hint.innerText = "";
 }
 
-async function callSolver(month: number, day: number, puzzle_type: PuzzleType): Promise<string> {
-    if (!(1 <= month && month <= 12 && 1 <= day && day <= 31)) {
+async function callSolver(month: number, day: number, weekday: number, puzzle_type: PuzzleType): Promise<string> {
+    if (!(1 <= month && month <= 12 && 1 <= day && day <= 31 && 0 <= weekday && weekday < 7)) {
 
         throw new Error("Error: invalid date: " + month + ", " + day);
     }
 
     // If there is a solution without flipping, return it.
     let r = await rust.then(m => {
-        return m.find_solution(month, day, puzzle_type, false /* allow_flip */);
+        return m.find_solution(month, day, weekday, puzzle_type, false /* allow_flip */);
     });
     if (r != "") {
         return r;
@@ -58,12 +61,13 @@ async function callSolver(month: number, day: number, puzzle_type: PuzzleType): 
     hint.innerText = "(No solution without flipping pieces.)";
 
     return await rust.then(m => {
-        return m.find_solution(month, day, puzzle_type, true);
+        return m.find_solution(month, day, weekday, puzzle_type, true);
     });
 }
 
 function addOptions() {
     const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     const today = new Date();
 
     const m_form =<HTMLSelectElement>document.getElementById(MONTH_FORM_ID);
@@ -82,6 +86,14 @@ function addOptions() {
     }
     d_form.selectedIndex = today.getDate() - 1;
 
+    const w_form =<HTMLSelectElement>document.getElementById(WEEKDAY_FORM_ID);
+    weekdays.forEach(w => {
+        const opt = document.createElement("option");
+        opt.text = w;
+        w_form.add(opt);
+    });
+    w_form.selectedIndex = today.getDay();
+    w_form.disabled = true;
 
     const p_form =<HTMLSelectElement>document.getElementById(PUZZLE_TYPE_FORM_ID);
     ["DragonFjord's A-Puzzle-A-Day", "JarringWords's Calendar Puzzle", "Tetromino-type Calendar Puzzle", "WeekDay Calendar Puzzle"].forEach(typ => {
@@ -92,10 +104,21 @@ function addOptions() {
     p_form.selectedIndex = 0;
 }
 
-function renderTable(month: number, day: number, board_str: string) {
-    const HEIGHT = 7;
+function onChangePuzzleType() {
+    const p_form =<HTMLSelectElement>document.getElementById(PUZZLE_TYPE_FORM_ID);
+    const w_form =<HTMLSelectElement>document.getElementById(WEEKDAY_FORM_ID);
+    if (p_form.selectedIndex == PuzzleType.WeekDay) {
+        w_form.disabled = false;
+    } else {
+        w_form.disabled = true;
+    }
+}
+
+function renderTable(month: number, day: number, weekday: number, board_str: string) {
+    const HEIGHT = 8;
     const WIDTH = 7;
     const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
     const COLOR_DICT = {
         "0": "crimson",
         "1": "pink",
@@ -138,8 +161,9 @@ function renderTable(month: number, day: number, board_str: string) {
                 div.innerText = MONTHS[month-1].toString();
             } else if (board[i][j] === "D") {
                 div.innerText = day.toString();
+            }else if (board[i][j] === "W") {
+                div.innerText = WEEKDAYS[weekday].toString();
             }
-
 
             cell.appendChild(div);
         }
@@ -148,6 +172,7 @@ function renderTable(month: number, day: number, board_str: string) {
 
 
 function initialize() {
+    document.getElementById(PUZZLE_TYPE_FORM_ID).onchange=onChangePuzzleType;
     document.getElementById(SOLVE_BUTTON_ID).onclick=buttonOnClick;
 
     addOptions();

@@ -26,19 +26,19 @@ pub fn find_solution(
         let y = (day - 1) % 7;
         Point::new(x as i32, y as i32)
     };
-    let w = {
-        let x = if week < 4 { week + 3 } else { week };
-        let y = if week < 4 { 6 } else { 7 };
-        Point::new(x as i32, y as i32)
+    let puzzle_type = match puzzle_type {
+        0 => PuzzleType::DragonFjord,
+        1 => PuzzleType::JarringWords,
+        2 => PuzzleType::Tetromino,
+        3 => PuzzleType::WeekDay,
+        x => panic!("invalid puzzle_type: {x}"),
     };
-    let puzzle_type = if puzzle_type == 0 {
-        PuzzleType::DragonFjord
-    } else if puzzle_type == 1 {
-        PuzzleType::JarringWords
-    } else if puzzle_type == 2 {
-        PuzzleType::Tetromino
+    let w = if puzzle_type == PuzzleType::WeekDay {
+        let x = if week < 4 { 6 } else { 7 };
+        let y = if week < 4 { week + 3 } else { week };
+        Some(Point::new(x as i32, y as i32))
     } else {
-        PuzzleType::WeekDay
+        None
     };
 
     let board = Board::new_from_day_pos(m, d, w, puzzle_type);
