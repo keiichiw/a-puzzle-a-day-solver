@@ -126,7 +126,7 @@ mod tests {
         let board = Board::new_from_day_pos(
             Point::new(0, 0),
             Point::new(2, 0),
-            Point::new(6, 6),
+            None,
             PuzzleType::DragonFjord,
         );
         let blocks = Block::get_blocks(PuzzleType::DragonFjord);
@@ -143,7 +143,7 @@ mod tests {
         let board = Board::new_from_day_pos(
             Point::new(0, 0),
             Point::new(2, 0),
-            Point::new(6, 6),
+            None,
             PuzzleType::DragonFjord,
         );
         let blocks = Block::get_blocks(PuzzleType::JarringWords);
@@ -160,7 +160,7 @@ mod tests {
         let board = Board::new_from_day_pos(
             Point::new(1, 5),
             Point::new(6, 0),
-            Point::new(6, 6),
+            None,
             PuzzleType::DragonFjord,
         );
         let blocks = Block::get_blocks(PuzzleType::DragonFjord);

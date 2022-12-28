@@ -65,7 +65,7 @@ fn main() -> Result<()> {
             bail!("unexpected month name: {}", month_str);
         }
         Some(p) => {
-            let x = if p <= 5 { 0 } else { 1 };
+            let x = usize::from(p > 5);
             let y = p - x * 6;
             Point::new(x as i32, y as i32)
         }
@@ -100,7 +100,7 @@ fn main() -> Result<()> {
                 Some(p) => {
                     let x = if p < 4 { 6 } else { 7 };
                     let y = if p < 4 { p + 3 } else { p };
-                    Some(Point::new(x as i32, y as i32))
+                    Some(Point::new(x, y as i32))
                 }
             }
         }
