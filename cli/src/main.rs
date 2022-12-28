@@ -7,6 +7,7 @@ use getopts::Options;
 const MONTH_NAMES: [&str; 12] = [
     "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
 ];
+const WEEK_DAYS: [&str; 7] = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 fn main() -> Result<()> {
     let args: Vec<String> = env::args().collect();
@@ -20,6 +21,12 @@ fn main() -> Result<()> {
         &format!("[{}]", MONTH_NAMES.to_vec().join("|")),
     );
     opts.reqopt("d", "day", "day", "[1-31]");
+    opts.optopt(
+        "w",
+        "week",
+        "week day",
+        &format!("[{}]", WEEK_DAYS.to_vec().join("|")),
+    );
     opts.optflag("f", "allow-flip", "allow flipping pieces");
     opts.optflag(
         "o",
@@ -29,8 +36,8 @@ fn main() -> Result<()> {
     opts.optopt(
         "t",
         "type",
-        "puzzle type. 'd' for 'DragonFjord', 'j' for 'JarringWords', or 't' for 'Tetromino' (default='d')",
-        "[d|j|t]",
+        "puzzle type. 'd' for 'DragonFjord', 'j' for 'JarringWords', 't' for 'Tetromino', 'w' for 'WeekDay' (default='d')",
+        "[d|j|t|w]",
     );
     opts.optflag("h", "help", "print this help menu");
     let matches = match opts.parse(&args[1..]) {
@@ -58,7 +65,7 @@ fn main() -> Result<()> {
             bail!("unexpected month name: {}", month_str);
         }
         Some(p) => {
-            let x = if p <= 5 { 0 } else { 1 };
+            let x = usize::from(p > 5);
             let y = p - x * 6;
             Point::new(x as i32, y as i32)
         }
@@ -80,7 +87,35 @@ fn main() -> Result<()> {
         .opt_get::<PuzzleType>("type")?
         .unwrap_or(PuzzleType::DragonFjord);
 
-    let board = Board::new_from_day_pos(month_pos, day_pos, typ);
+    let week_pos = match typ {
+        PuzzleType::WeekDay => {
+            let week_str: String = matches
+                .opt_get("week")
+                .unwrap()
+                .context("weekday is not passed")?;
+            match WEEK_DAYS.iter().position(|w| *w == week_str) {
+                None => {
+                    bail!("unexpected week name: {}", week_str);
+                }
+                Some(p) => {
+                    let x = if p < 4 { 6 } else { 7 };
+                    let y = if p < 4 { p + 3 } else { p };
+                    Some(Point::new(x, y as i32))
+                }
+            }
+        }
+        _ => {
+            if let Ok(Some(s)) = matches.opt_get::<String>("week") {
+                bail!(
+                    "weekday option \"{s}\" is given but not supported for {:?}",
+                    typ
+                );
+            }
+            None
+        }
+    };
+
+    let board = Board::new_from_day_pos(month_pos, day_pos, week_pos, typ);
     let blocks = Block::get_blocks(typ);
 
     let sols = solve(&board, &blocks, &opts);

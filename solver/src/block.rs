@@ -7,7 +7,7 @@ use anyhow::{bail, Result};
 
 use crate::point::Point;
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum PuzzleType {
     /// DragonFjord's [A-Puzzle-A-Day](https://www.dragonfjord.com/product/a-puzzle-a-day/).
     DragonFjord = 0,
@@ -15,6 +15,8 @@ pub enum PuzzleType {
     JarringWords = 1,
     /// Tetromino Type [Puzzle containing quad pieces](https://puzzleparadise.net/listing/puzzle-calendar-solve-for-each-day-of-the-year-cherry-pieces-and-walnut-border/107535)
     Tetromino = 2,
+    /// Weekday Type [Puzzle containing weekday pieces](https://www.amazon.com/gp/product/B09NVQSY7Q)
+    WeekDay = 3,
 }
 
 impl FromStr for PuzzleType {
@@ -25,6 +27,7 @@ impl FromStr for PuzzleType {
             "d" | "D" | "dragonfjord" | "DragonFjord" => Ok(Self::DragonFjord),
             "j" | "J" | "jarringwords" | "JarringWords" => Ok(Self::JarringWords),
             "t" | "T" | "tetromino" | "Tetromino" => Ok(Self::Tetromino),
+            "w" | "W" | "weekday" | "WeekDay" => Ok(Self::WeekDay),
             _ => bail!("'{}' is invalid puzzle type", s),
         }
     }
@@ -42,7 +45,7 @@ impl fmt::Display for Block {
         let min_y = self.ps.iter().map(|p| p.y).min().unwrap();
         let max_y = self.ps.iter().map(|p| p.y).max().unwrap();
 
-        let base = Point::new(min_x as i32, min_y as i32);
+        let base = Point::new(min_x, min_y);
         let height = max_x - min_x + 1;
         let width = max_y - min_y + 1;
         let mut board = vec![vec!['.'; width as usize]; height as usize];
@@ -74,11 +77,12 @@ enum Piece {
     TetT,      // Tetromino, T
     TetI,      // Tetromino, I
     TetZ,      // Tetromino, Z
+    WeekZ,     // Weekday, Z
 }
 
 impl From<Piece> for Block {
     fn from(p: Piece) -> Self {
-        const BLOCK_SETS: [&[&str]; 14] = [
+        const BLOCK_SETS: [&[&str]; 15] = [
             &["###", "###"],           // Hexomino, Rectangle
             &["##", ".#", ".#", ".#"], // Pentomino, L
             &["#.", "##", ".#", ".#"], // Pentomino, N
@@ -93,6 +97,7 @@ impl From<Piece> for Block {
             &["###", ".#."],           // Tetromino, T
             &["####"],                 // Tetromino, I
             &[".##", "##."],           // Tetromino, Z
+            &["###.", "..##"],         // WeekDay, Z
         ];
         Self::from_strs(BLOCK_SETS[p as usize]).unwrap()
     }
@@ -159,6 +164,12 @@ impl Block {
                 // Tetromino uses a bunch of tetrominoes
                 vec![
                     HexRect, PentV, PentU, PentP, TetSquare, TetL, TetT, TetZ, TetI,
+                ]
+            }
+            PuzzleType::WeekDay => {
+                // WeekDay uses `PentL`
+                vec![
+                    PentP, PentL, PentZ, TetZ, PentT, PentU, PentV, TetI, TetL, WeekZ,
                 ]
             }
         };
