@@ -17,26 +17,26 @@ pub fn find_solution(
     allow_flip: bool,
 ) -> String {
     let m = {
-        let x = if month <= 6 { 0 } else { 1 };
+        let x = i32::from(month > 6);
         let y = (month - 1) - x * 6;
-        Point::new(x as i32, y as i32)
+        Point::new(x, y)
     };
     let d = {
         let x = (day - 1) / 7 + 2;
         let y = (day - 1) % 7;
-        Point::new(x as i32, y as i32)
+        Point::new(x, y)
     };
     let puzzle_type = match puzzle_type {
         0 => PuzzleType::DragonFjord,
         1 => PuzzleType::JarringWords,
         2 => PuzzleType::Tetromino,
         3 => PuzzleType::WeekDay,
-        x => panic!("invalid puzzle_type: {x}"),
+        _x => panic!("{}", "invalid puzzle_type: {x}"),
     };
     let w = if puzzle_type == PuzzleType::WeekDay {
         let x = if week < 4 { 6 } else { 7 };
         let y = if week < 4 { week + 3 } else { week };
-        Some(Point::new(x as i32, y as i32))
+        Some(Point::new(x, y))
     } else {
         None
     };

@@ -45,7 +45,7 @@ impl fmt::Display for Block {
         let min_y = self.ps.iter().map(|p| p.y).min().unwrap();
         let max_y = self.ps.iter().map(|p| p.y).max().unwrap();
 
-        let base = Point::new(min_x as i32, min_y as i32);
+        let base = Point::new(min_x, min_y);
         let height = max_x - min_x + 1;
         let width = max_y - min_y + 1;
         let mut board = vec![vec!['.'; width as usize]; height as usize];
