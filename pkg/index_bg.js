@@ -29,14 +29,15 @@ function getStringFromWasm0(ptr, len) {
 * month: 1~12, day: 1~31
 * @param {number} month
 * @param {number} day
+* @param {number} week
 * @param {number} puzzle_type
 * @param {boolean} allow_flip
 * @returns {string}
 */
-export function find_solution(month, day, puzzle_type, allow_flip) {
+export function find_solution(month, day, week, puzzle_type, allow_flip) {
     try {
         const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
-        wasm.find_solution(retptr, month, day, puzzle_type, allow_flip);
+        wasm.find_solution(retptr, month, day, week, puzzle_type, allow_flip);
         var r0 = getInt32Memory0()[retptr / 4 + 0];
         var r1 = getInt32Memory0()[retptr / 4 + 1];
         return getStringFromWasm0(r0, r1);

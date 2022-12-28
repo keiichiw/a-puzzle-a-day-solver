@@ -26,7 +26,15 @@ Use `--help` flag for advanced usages.
 
 ### Web App
 
+#### Build
+
 ```
 $ npm install # only once
+$ npm run build # Build
+```
+
+#### Run Dev Server
+
+```
 $ npm run serve
 ```
