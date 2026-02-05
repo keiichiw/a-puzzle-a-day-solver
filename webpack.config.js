@@ -3,6 +3,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
 const WasmPackPlugin = require("@wasm-tool/wasm-pack-plugin");
 
+const isProd = process.env.NODE_ENV === 'production';
+
 module.exports = {
     entry: './app/index.ts',
     module: {
@@ -40,7 +42,9 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, 'public/dist/'),
         // Use an absolute public path to avoid double "dist" when resolving dynamic chunks.
-        publicPath: "/dist/",
+        publicPath: isProd
+            ? '/a-puzzle-a-day-solver/dist/'
+            : '/dist/',
         filename: 'main.js',
     },
     plugins: [
