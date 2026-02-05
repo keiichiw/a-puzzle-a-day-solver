@@ -1,5 +1,6 @@
 {
   "name": "a-puzzle-a-day-solver",
+  "type": "module",
   "collaborators": [
     "Keiichi Watanabe <udon.watanabe@gmail.com>"
   ],
@@ -10,7 +11,10 @@
     "index_bg.js",
     "index.d.ts"
   ],
-  "module": "index.js",
+  "main": "index.js",
   "types": "index.d.ts",
-  "sideEffects": false
+  "sideEffects": [
+    "./index.js",
+    "./snippets/*"
+  ]
 }
