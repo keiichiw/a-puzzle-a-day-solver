@@ -7,4 +7,3 @@ wasm.__wbindgen_start();
 export {
     find_solution
 } from "./index_bg.js";
-export { wasm as __wasm }
