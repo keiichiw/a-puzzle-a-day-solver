@@ -5,6 +5,7 @@ A solver of [DragonFjord](https://www.dragonfjord.com/)'s [A-Puzzle-A-Day](https
 The web version of this tool is available [here](http://keiichiw.github.io/a-puzzle-a-day-solver/).
 
 The solver's algorithm is implemented in Rust and its code is compiled to WebAssembly to run on browsers.
+Algorithm details are documented in [`SOLVER_ALGORITHM.md`](SOLVER_ALGORITHM.md).
 
 Note that this is my personal hobby project and has nothing to do with the authors of the puzzles or my employer.
 

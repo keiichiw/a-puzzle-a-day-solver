@@ -19,6 +19,29 @@ export function find_solution(month, day, week, puzzle_type, allow_flip) {
         wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
     }
 }
+
+/**
+ * month: 1~12, day: 1~31
+ * @param {number} month
+ * @param {number} day
+ * @param {number} week
+ * @param {number} puzzle_type
+ * @param {boolean} allow_flip
+ * @param {number} max_solutions
+ * @returns {string}
+ */
+export function find_solutions(month, day, week, puzzle_type, allow_flip, max_solutions) {
+    let deferred1_0;
+    let deferred1_1;
+    try {
+        const ret = wasm.find_solutions(month, day, week, puzzle_type, allow_flip, max_solutions);
+        deferred1_0 = ret[0];
+        deferred1_1 = ret[1];
+        return getStringFromWasm0(ret[0], ret[1]);
+    } finally {
+        wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
+    }
+}
 export function __wbindgen_init_externref_table() {
     const table = wasm.__wbindgen_externrefs;
     const offset = table.grow(4);
