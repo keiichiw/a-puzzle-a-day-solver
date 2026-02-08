@@ -34,7 +34,7 @@ Examples:
 ### CLI
 
 ```
-$ cargo run -p a-puzzle-a-day-cli -- --month Jan --day 1
+$ cargo run -p a-puzzle-a-day-cli --bin a-puzzle-a-day-cli -- --month Jan --day 1
 ```
 
 Use `--help` flag for advanced usages.
