@@ -13,14 +13,14 @@ Note that this is my personal hobby project and has nothing to do with the autho
 
 You can prefill the web UI with query parameters.
 
-* `date=YYYY-MM-DD` (preferred)
+* `date=MM-DD` (preferred)
 * `month` / `day` (1-based)
 * `type` (one of `dragonfjord`, `jarringwords`, `tetromino`, `weekday`, or `0-3`)
 * `weekday` (`sun`..`sat` or `0-6`, only used for `weekday` type)
 
 Examples:
 
-* `/?date=2026-02-03&type=dragonfjord`
+* `/?date=02-03&type=dragonfjord`
 * `/?month=12&day=25&type=weekday&weekday=fri`
 
 ## For Developers

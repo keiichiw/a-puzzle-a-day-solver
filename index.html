@@ -11,9 +11,14 @@
                 integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
                 crossorigin="anonymous"></script>
         <title>A-Puzzle-A-Day Solver</title>
-        <!-- Cloudflare Web Analytics -->
-        <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "b959fbe8bd884d24b91c807892053dfa"}'></script>
-        <!-- End Cloudflare Web Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-GTBWK8665F"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', 'G-GTBWK8665F');
+        </script>
     </head>
 
     <body>
@@ -72,7 +77,9 @@
                         <p class="controls-note">Weekday is used only for "WeekDay Calendar Puzzle".</p>
                         <details class="text-muted small tip">
                             <summary>Tip</summary>
-                            You can prefill by URL. Example: <code>?date=2026-01-01&type=dragonfjord</code>. Full help:
+                            You can prefill by URL. Example:
+                            <a href="?date=01-01&amp;type=dragonfjord"><code>?date=01-01&amp;type=dragonfjord</code></a>.
+                            Full help:
                             <a href="https://github.com/keiichiw/a-puzzle-a-day-solver#url-prefill">README</a>
                         </details>
                         <div class="actions">
